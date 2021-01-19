@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>dbf</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container">
+		<h2 style="text-align:center;margin-bottom:50px;">dbf导入数据库工具</h2>
+	
+		<form class="form-horizontal" name="excelForm" id="excelForm">
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">数据库表名：</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="newTableName" name="newTableName" placeholder="请按照数据库表名规则要求填写">
+		    </div>
+		  </div>
+		  <div class="form-group customPara">
+		    <label for="cellIndex" class="col-sm-2 control-label">创建新表：</label>
+		    <div class="col-sm-10">
+		      <select class="form-control" id="isCreateTable" name="isCreateTable">
+				  <option value="true">是</option>
+				  <option value="false">否</option>
+
+				</select>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="uploadFile" class="col-sm-2 control-label">dbf文件：</label>
+		    <div class="col-sm-10">
+		      <input type="file" class="form-control" id="uploadFile" name="uploadFile" >
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">数据库类型：</label>
+		    <div class="col-sm-10">
+		      <div class="btn-group btn-group-justified" role="group" aria-label="...">
+				  <div class="btn-group" role="group">
+				    <button type="button" class="btn btn-primary pageLandscape" data-landscape="mysql">mysql</button>
+				  </div>
+				  
+				  <div class="btn-group" role="group">
+				    <button type="button" class="btn btn-default pageLandscape" disabled data-landscape="oracle">oracle（暂不支持)</button>
+				  </div>
+				</div>
+		    </div>
+		  </div>
+			
+		<div class="form-group customPara">
+		    <label for="mysqlUrl" class="col-sm-2 control-label">数据库url：</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="mysqlUrl" name="mysqlUrl" value="jdbc:mysql://localhost:3306/dbf?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC">
+		    </div>
+		  </div>
+		  <div class="form-group customPara">
+		    <label for="mysqlUser" class="col-sm-2 control-label">数据库账户：</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="mysqlUser" name="mysqlUser" value="root">
+		    </div>
+		  </div>
+		  <div class="form-group customPara">
+		    <label for="mysqlPass" class="col-sm-2 control-label">数据库密码：</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="mysqlPass" name="mysqlPass" value="root">
+		    </div>
+		  </div>
+		  <div class="form-group customPara">
+		    <label for="charset" class="col-sm-2 control-label">dbf文件解析字符集：</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="charset" name="charset" value="GBK">
+		    </div>
+		  </div>
+			
+		</form>
+		
+		<div style="text-align:center;margin-top:50px;">
+			<button type="button" class="btn btn-primary btn-lg" id="submitBtn">提 交 处 理</button>&nbsp;&nbsp;
+			<button type="button" class="btn btn-default btn-lg" id="customBtn">高 级 选 项</button>
+		</div>
+		
+		<footer>
+		    <hr>
+		
+		    <!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
+		    <p class="pull-right">服务中心-网络信息部</p>
+		    <p>© 2021 xiaojz</p>
+		</footer>
+	</div>
+
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/layer/layer.js"></script>
+	<script type="text/javascript">
+	
+		var applicationPath = "/BarcodeHandle";
+	
+		$(function(){
+			$(".customPara").hide();
+		});
+		
+		$("#customBtn").click(function(){
+			$(".customPara").show();
+			$(this).hide();
+		});
+		
+	
+		
+	
+		$("#submitBtn").click(function(){
+			if(validForm()){
+				submit();
+			}
+		});
+		
+		function validForm(){
+			if($("#newTableName").val() == ""){
+	 			layer.msg('请先填写“数据库表名”');
+	 			return false;
+			}
+			
+			if($("#uploadFile").val() == ""){
+	 			layer.msg('请先上传dbf文件');
+	 			return false;
+			}
+
+
+			if($("#mysqlUrl").val() == ""){
+	 			layer.msg('请先填写“数据库url”');
+	 			return false;
+			}
+			if($("#mysqlUser").val() == ""){
+	 			layer.msg('请先填写“数据库账户”');
+	 			return false;
+			}
+			if($("#mysqlPass").val() == ""){
+	 			layer.msg('请先填写“数据库密码”');
+	 			return false;
+			}
+			if($("#charset").val() == ""){
+	 			layer.msg('请先填写“dbf文件解析字符集”');
+	 			return false;
+			}
+			return true;
+		}
+		
+		function submit(){
+			var formData = new FormData();
+			formData.append("newTableName",$.trim($("#newTableName").val()));
+			formData.append("isCreateTable",$.trim($("#isCreateTable").val()));
+			formData.append("uploadFile",$("#uploadFile")[0].files[0]);
+			formData.append("databaseType",$(".pageLandscape.btn-primary").data("landscape"));
+			formData.append("mysqlUrl",$.trim($("#mysqlUrl").val()));
+			formData.append("mysqlUser",$.trim($("#mysqlUser").val()));
+			formData.append("mysqlPass",$.trim($("#mysqlPass").val()));
+			formData.append("charset",$.trim($("#charset").val()));
+			
+			loadingLayer = layer.msg('正在加载...', {icon: 16, time:0, shade: [0.1,'#fff']});
+			$.ajax({  
+		         url: applicationPath + "/dbf/dbfToMysql",  
+		         type: 'POST',  
+		         data: formData,  async: true,   cache: false,   contentType: false,  dataType: 'json',
+		         processData: false,  
+		         success: function (data) {
+		 			layer.close(loadingLayer);
+		 			if(data.rtResponse != null && data.rtResponse.rt_code == 200){
+		 				layer.msg('处理完成');
+		 			}else if(data.rtResponse != null && data.rtResponse.rt_code == 500){
+						layer.msg("出错："+data.rtResponse.rt_desc);
+					}else if(data.rtResponse != null && data.rtResponse.rt_code == 403){
+						layer.msg("会话超时，请刷新页面后重试");
+					}else{
+						layer.msg("请求失败，请联系管理员");
+					}
+		         },  
+		         error: function (data) {  
+		        	 layer.msg("文件导入失败");  
+		             console.info(data);
+		         }  
+		    });
+		}
+		
+		
+		
+		$("#uploadFile").change(function(){
+			if($("#uploadFile")[0].value == "" ){
+				return;
+			}
+			// if file is not xlsx , delete it and notice user
+		   var fileName=$("#uploadFile")[0].value;  
+			console.info(fileName);
+		   var suffixIndex=fileName.lastIndexOf(".");  
+		   var suffix=fileName.substring(suffixIndex+1).toUpperCase();  
+		   if(suffix!="DBF" ){  
+				layer.msg('请上传dbf文件');
+				$("#uploadFile")[0].value = "";
+				return;
+		   }
+		});
+		
+		
+	
+	</script>
+</body>
+</html>

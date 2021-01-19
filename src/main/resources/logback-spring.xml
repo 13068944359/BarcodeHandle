@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+
+    <!-- 文件输出格式 -->
+    <property name="PATTERN" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n" />
+    
+    <!-- name的值是变量的名称，value的值时变量定义的值。通过定义的值会被插入到logger上下文中。定义后，可以使“${}”来使用变量。 -->
+    <property name="log.path" value="/home/xiaojz/apache-tomcat-8.5.31/excelLogs" />
+    
+    
+    <!-- 开发环境 -->
+    <springProfile name="dev">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${PATTERN}</pattern>
+            </encoder>
+        </appender>
+        <logger name="com.light.springboot" level="debug" />
+        
+        <!-- 打印sql -->
+	    <logger name="org.hibernate.SQL" level="DEBUG"/>
+        <!-- 打印入参 -->
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" />
+        
+        <root level="info" >
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+    
+    
+    <!-- 生产环境 -->
+    <springProfile name="prod">
+    
+    	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${PATTERN}</pattern>
+            </encoder>
+        </appender>
+    
+        <!--2. 输出到文档-->
+	    <!-- 2.1 level为 DEBUG 日志，时间滚动输出  -->
+	    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	        <!-- 正在记录的日志文档的路径及文档名 -->
+	        <file>${log.path}/app_debug.log</file>
+	        <!--日志文档输出格式-->
+	        <encoder>
+	            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+	            <charset>UTF-8</charset> <!-- 设置字符集 -->
+	        </encoder>
+	        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+	        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	            <!-- 日志归档 -->
+	            <fileNamePattern>${log.path}/app-debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+	            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+	                <maxFileSize>100MB</maxFileSize>
+	            </timeBasedFileNamingAndTriggeringPolicy>
+	            <!--日志文档保留天数-->
+	            <maxHistory>15</maxHistory>
+	        </rollingPolicy>
+	        <!-- 此日志文档只记录debug级别的 -->
+	        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+	            <level>debug</level>
+	        </filter>
+	    </appender>
+	
+	    <!-- 2.2 level为 INFO 日志，时间滚动输出  -->
+	    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	        <!-- 正在记录的日志文档的路径及文档名 -->
+	        <file>${log.path}/app_info.log</file>
+	        <!--日志文档输出格式-->
+	        <encoder>
+	            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+	            <charset>UTF-8</charset>
+	        </encoder>
+	        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+	        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	            <!-- 每天日志归档路径以及格式 -->
+	            <fileNamePattern>${log.path}/app-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+	            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+	                <maxFileSize>100MB</maxFileSize>
+	            </timeBasedFileNamingAndTriggeringPolicy>
+	            <!--日志文档保留天数-->
+	            <maxHistory>15</maxHistory>
+	        </rollingPolicy>
+	        <!-- 此日志文档只记录info级别的 -->
+	        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+	            <level>info</level>
+	        </filter>
+	    </appender>
+	    
+	    
+        
+        <!-- <root level="warn"> -->
+        <root level="info">
+            <appender-ref ref="DEBUG_FILE" />
+            <appender-ref ref="INFO_FILE" />
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+</configuration>

@@ -1,0 +1,15 @@
+server: 
+  port: 8080
+  servlet: 
+    context-path: /BarcodeHandle
+
+spring: 
+  profiles: 
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+    
+xiaojz: 
+  downloadPath: /home/xiaojz/download/
