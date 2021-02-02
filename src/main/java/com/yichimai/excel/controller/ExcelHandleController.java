@@ -38,10 +38,8 @@ public class ExcelHandleController {
 		File file =new File(downloadFileFolderPath);    
 		//如果文件夹不存在则创建    
 		if  (!file .exists()  && !file .isDirectory())    {       
-//		    System.out.println("//不存在");  
-		    file .mkdirs();    
+		    file.mkdirs();    
 		} else {  
-//		    System.out.println("//目录存在");  
 		} 
 	}
 	
