@@ -37,4 +37,23 @@ public class DbfToDatabaseController {
 	}
 	
 	
+	@PostMapping("/testMultiFile")
+	public Object testMultiFile(MultipartFile uploadFile			) {
+		Map<String, Object> result = null;
+		try {
+			
+			long size = uploadFile.getSize();
+			System.out.println("fileSize = " + size);
+			
+			result = ResponseUtil.createSuccessResponse(null);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = ResponseUtil.createErrorResponse(e.getMessage());
+			return result;
+		}
+		return result;
+	}
+	
+	
 }
