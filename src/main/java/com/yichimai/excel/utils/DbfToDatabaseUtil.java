@@ -87,7 +87,8 @@ public class DbfToDatabaseUtil {
 		// read record line by line
 		while((rowValues = reader.nextRecord()) != null){
 			for(int index=0; index<titleList.size(); index++	) {
-				ps.setString(index + 1, rowValues[index].toString().trim());
+				String val = rowValues[index]==null?"":rowValues[index].toString().trim();
+				ps.setString(index + 1, val);
 			}
 			ps.addBatch(); // one record in batch
 			lineCount ++; countAll ++;
