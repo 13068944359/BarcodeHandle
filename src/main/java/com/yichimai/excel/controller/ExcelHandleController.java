@@ -104,6 +104,9 @@ public class ExcelHandleController {
 				}
 			}
 		}
+		
+		file.deleteOnExit();//delete after download
+		
 		return null;
 	}
 	
