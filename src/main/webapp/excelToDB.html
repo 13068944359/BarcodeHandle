@@ -2,12 +2,12 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>dbf</title>
+	<title>excel导入数据库工具</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
 	<div class="container">
-		<h2 style="text-align:center;margin-bottom:50px;">dbf导入数据库工具</h2>
+		<h2 style="text-align:center;margin-bottom:50px;">excel导入数据库工具</h2>
 	
 		<form class="form-horizontal" name="excelForm" id="excelForm">
 		  <div class="form-group">
@@ -26,12 +26,21 @@
 				</select>
 		    </div>
 		  </div>
+		  
 		  <div class="form-group">
-		    <label for="uploadFile" class="col-sm-2 control-label">dbf文件：</label>
+		    <label for="uploadFile" class="col-sm-2 control-label">excel文件：</label>
 		    <div class="col-sm-10">
 		      <input type="file" class="form-control" id="uploadFile" name="uploadFile" >
 		    </div>
 		  </div>
+		  
+		  <div class="form-group customPara">
+		    <label for="mysqlUrl" class="col-sm-2 control-label">sheet下标：</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="sheetIndex" name="sheetIndex" value="0">
+		    </div>
+		  </div>
+		  
 		  <div class="form-group">
 		    <label class="col-sm-2 control-label">数据库类型：</label>
 		    <div class="col-sm-10">
@@ -65,12 +74,6 @@
 		      <input type="text" class="form-control" id="mysqlPass" name="mysqlPass" value="root">
 		    </div>
 		  </div>
-		  <div class="form-group customPara">
-		    <label for="charset" class="col-sm-2 control-label">dbf文件解析字符集：</label>
-		    <div class="col-sm-10">
-		      <input type="text" class="form-control" id="charset" name="charset" value="GBK">
-		    </div>
-		  </div>
 			
 		</form>
 		
@@ -96,19 +99,67 @@
 	
 		var applicationPath = "/BarcodeHandle";
 	
-	
-		$("#submitBtn").click(function(){
-			submit();
+		$(function(){
+			$(".customPara").hide();
 		});
 		
+		$("#customBtn").click(function(){
+			$(".customPara").show();
+			$(this).hide();
+		});
+	
+		
+	
+		$("#submitBtn").click(function(){
+			if(validForm()){
+				submit();
+			}
+		});
+		
+		function validForm(){
+			if($("#newTableName").val() == ""){
+	 			layer.msg('请先填写“数据库表名”');
+	 			return false;
+			}
+			
+			if($("#uploadFile").val() == ""){
+	 			layer.msg('请先上传文件');
+	 			return false;
+			}
+
+			if($("#mysqlUrl").val() == ""){
+	 			layer.msg('请先填写“数据库url”');
+	 			return false;
+			}
+			if($("#mysqlUser").val() == ""){
+	 			layer.msg('请先填写“数据库账户”');
+	 			return false;
+			}
+			if($("#mysqlPass").val() == ""){
+	 			layer.msg('请先填写“数据库密码”');
+	 			return false;
+			}
+			if($("#sheetIndex").val() == ""){
+	 			layer.msg('请先填写“sheet下标”');
+	 			return false;
+			}
+			return true;
+		}
 		
 		function submit(){
 			var formData = new FormData();
+			formData.append("newTableName",$.trim($("#newTableName").val()));
+			formData.append("isCreateTable",$.trim($("#isCreateTable").val()));
 			formData.append("uploadFile",$("#uploadFile")[0].files[0]);
+			formData.append("databaseType",$(".pageLandscape.btn-primary").data("landscape"));
+			formData.append("DBUrl",$.trim($("#mysqlUrl").val()));
+			formData.append("DBUser",$.trim($("#mysqlUser").val()));
+			formData.append("DBPass",$.trim($("#mysqlPass").val()));
+			formData.append("sheetIndex",$.trim($("#sheetIndex").val()));
 			
 			loadingLayer = layer.msg('正在加载...', {icon: 16, time:0, shade: [0.1,'#fff']});
 			$.ajax({  
-		         url: applicationPath + "/dbf/testMultiFile",  
+		         url: applicationPath + "/excel/excelToDB",  
 		         type: 'POST',  
 		         data: formData,  async: true,   cache: false,   contentType: false,  dataType: 'json',
 		         processData: false,  
@@ -130,6 +181,23 @@
 		         }  
 		    });
 		}
+		
+		
+		$("#uploadFile").change(function(){
+			if($("#uploadFile")[0].value == "" ){
+				return;
+			}
+			// if file is not xlsx , delete it and notice user
+		   var fileName=$("#uploadFile")[0].value;  
+			console.info(fileName);
+		   var suffixIndex=fileName.lastIndexOf(".");  
+		   var suffix=fileName.substring(suffixIndex+1).toUpperCase();  
+		   if(suffix!="XLSX" && suffix!="XLS" ){  
+				layer.msg('请上传excel文件');
+				$("#uploadFile")[0].value = "";
+				return;
+		   }
+		});
 		
 		
 	

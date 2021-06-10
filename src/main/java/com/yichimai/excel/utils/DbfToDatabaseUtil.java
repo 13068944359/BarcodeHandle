@@ -23,19 +23,8 @@ public class DbfToDatabaseUtil {
 	
 	public static void handle(String databaseType,String mysqlUrl,String mysqlUser,String mysqlPass,String newTableName,
 			Boolean isCreateTable,MultipartFile dbfFile,String charset) throws Exception {
-		
-		switch (databaseType) {
-			case Const.DATABASE_TYPE_MYSQL:
-				Class.forName("com.mysql.jdbc.Driver");//加载数据库驱动
-				break;
-	
-			case Const.DATABASE_TYPE_ORACLE:
-				Class.forName("oracle.jdbc.OracleDriver");//加载数据库驱动
-				break;
-			default:
-				break;
-		}
-		
+
+		loadDBDriver(databaseType);
 		DBFReader reader = new DBFReader(dbfFile.getInputStream(),Charset.forName(charset));// specify encoding method
 		
 		int fieldsCount = reader.getFieldCount();//get title msg
@@ -53,6 +42,50 @@ public class DbfToDatabaseUtil {
 		}
 		
 		insertData(reader, mysqlUrl, mysqlUser, mysqlPass, titleList, newTableName);
+	}
+	
+	// handle multi file
+	public static void handle(String databaseType,String mysqlUrl,String mysqlUser,String mysqlPass,String newTableName,
+			Boolean isCreateTable,MultipartFile[] dbfFile,String charset) throws Exception {
+		
+		loadDBDriver(databaseType);
+		DBFReader reader = new DBFReader(dbfFile[0].getInputStream(),Charset.forName(charset));// specify encoding method
+		
+		int fieldsCount = reader.getFieldCount();//get title msg
+		//取出字段信息
+		List<String> titleList = new ArrayList<String>();
+		for( int i=0; i<fieldsCount; i++){
+			DBFField field = reader.getField(i);
+			titleList.add(field.getName());
+		}
+//		System.out.println(titleList);//print title
+		LOGGER.info("dbfTitle= " + titleList);
+		
+		if(isCreateTable) {
+			createTable(mysqlUrl, mysqlUser, mysqlPass, titleList, newTableName);
+		}
+		reader.close();
+		
+		for(MultipartFile f : dbfFile) {
+			reader = new DBFReader(f.getInputStream(),Charset.forName(charset));// specify encoding method
+			insertData(reader, mysqlUrl, mysqlUser, mysqlPass, titleList, newTableName);
+			reader.close();
+		}
+	}
+	
+	
+	private static void loadDBDriver(String databaseType) throws Exception {
+		switch (databaseType) {
+		case Const.DATABASE_TYPE_MYSQL:
+			Class.forName("com.mysql.jdbc.Driver");//加载数据库驱动
+			break;
+
+		case Const.DATABASE_TYPE_ORACLE:
+			Class.forName("oracle.jdbc.OracleDriver");//加载数据库驱动
+			break;
+		default:
+			break;
+	}
 	}
 
 	

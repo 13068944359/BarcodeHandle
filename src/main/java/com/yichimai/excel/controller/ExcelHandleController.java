@@ -20,9 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.yichimai.excel.utils.DbfToDatabaseUtil;
 import com.yichimai.excel.utils.ExcelHandlerUtil;
 import com.yichimai.excel.utils.ExcelHandlerUtil2;
+import com.yichimai.excel.utils.ExcelToDatabaseUtil;
 import com.yichimai.excel.utils.ResponseUtil;
+
+import cn.hutool.http.HttpStatus;
 
 
 @Controller
@@ -109,6 +113,27 @@ public class ExcelHandleController {
 		
 		return null;
 	}
+	
+	
+	
+	
+	@PostMapping("/excelToDB")
+	public Object handleExcel(String databaseType,String DBUrl,String DBUser,String DBPass,
+			String newTableName,String isCreateTable,MultipartFile uploadFile,Integer sheetIndex
+			) {
+		Map<String, Object> result = null;
+		try {
+			ExcelToDatabaseUtil.handle(databaseType, DBUrl, DBUser, DBPass, newTableName, Boolean.parseBoolean(isCreateTable), uploadFile, sheetIndex);
+			result = ResponseUtil.createSuccessResponse(null);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = ResponseUtil.createErrorResponse(e.getMessage());
+			return result;
+		}
+		return result;
+	}
+	
 	
 	
 	

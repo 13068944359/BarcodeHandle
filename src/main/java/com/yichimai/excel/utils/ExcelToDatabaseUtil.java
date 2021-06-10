@@ -1,5 +1,6 @@
 package com.yichimai.excel.utils;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,12 +10,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import cn.hutool.core.lang.Console;
 import cn.hutool.extra.pinyin.PinyinUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.sax.Excel07SaxReader;
 import cn.hutool.poi.excel.sax.handler.RowHandler;
+import cn.hutool.poi.exceptions.POIException;
 
 /**
  * 把excel文件导入数据库
@@ -27,59 +31,95 @@ public class ExcelToDatabaseUtil {
 //		Excel07SaxReader reader = new Excel07SaxReader(createRowHandler());
 //		reader.read("d:/1008/test.xlsx", 0);
 		
-		
 	}
 	
+	
+	
+	public static void handle(String databaseType,String DBUrl,String DBUser,String DBPass,
+			String newTableName,Boolean isCreateTable,MultipartFile file,int sheetIndex) throws Exception {
+		Excel07SaxReader reader = new Excel07SaxReader(createRowHandler(databaseType,DBUrl,DBUser,DBPass,newTableName,isCreateTable));
+		reader.read(file.getInputStream(), sheetIndex);//sheetIndex sheet页的下标
+	}
+	
+	
+	private static Connection SQL_CONN = null;
 	private static PreparedStatement PS = null;
 	
-	private static RowHandler createRowHandler() {
+	private static RowHandler createRowHandler(String databaseType,String DBUrl,String DBUser,String DBPass,
+			String newTableName,Boolean isCreateTable) {
 	    return new RowHandler() {
 	        @Override
 	        public void handle(int sheetIndex, long rowIndex, List<Object> rowlist) {
-	            
-	            if(rowIndex == 0) {
-//	            	System.out.println(rowlist.size());
-	            	try {
-	            		createTableAndInsertSql(rowlist);
-//						createInsertSql(rowlist.size());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-	            }else {
-	    			try {
+            	try {
+		            if(rowIndex == 0) {
+	            		createTableAndInsertSql(rowlist,databaseType,DBUrl,DBUser,DBPass,newTableName,isCreateTable);
+						
+		            }else {
 		            	for(int index=0; index<rowlist.size(); index++	) {
 		    				PS.setString(index + 1, rowlist.get(index).toString().trim());
 		    			}
-						PS.execute();
-						System.out.println("executed  ~ " + rowIndex);
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-	            	
-	            }
-	            
+						PS.addBatch(); // one record in batch
+
+	    				if(rowIndex % 1000 ==0) {
+							System.out.println("executed  ~ " + rowIndex);
+							PS.executeBatch();// insert data in batch
+							SQL_CONN.commit();
+	    				}
+		            }
+            	} catch (Exception e) {
+					e.printStackTrace();
+				}
 	        }
+	        
+	        @Override
+	        public void doAfterAllAnalysed() {
+	        	RowHandler.super.doAfterAllAnalysed();
+				try {
+					PS.executeBatch();// insert data in batch
+					SQL_CONN.commit();
+					
+					PS.close();
+					SQL_CONN.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+	        }
+	        
 	    };
 	}
 	
-	private static final String URL = "jdbc:mysql://localhost:3306/dbf?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
-	private static final String USERNAME = "root";
-	private static final String PASS = "root";
 	
-	
-	private static void createTableAndInsertSql(List<Object> rowlist) throws Exception {
+	private static void createTableAndInsertSql(List<Object> rowlist,String databaseType,String DBUrl,String DBUser,String DBPass,
+			String newTableName,Boolean isCreateTable) throws Exception {
 		
-		Connection conn = DriverManager.getConnection(URL, USERNAME, PASS);
-		Statement stat = conn.createStatement();
+		switch (databaseType) {
+			case Const.DATABASE_TYPE_MYSQL:
+				Class.forName("com.mysql.jdbc.Driver");//加载数据库驱动
+				break;
+	
+			case Const.DATABASE_TYPE_ORACLE:
+				Class.forName("oracle.jdbc.OracleDriver");//加载数据库驱动
+				break;
+			default:
+				break;
+		}
+		
+		
+		SQL_CONN = DriverManager.getConnection(DBUrl, DBUser, DBPass);
+		Statement stat = SQL_CONN.createStatement();
+		SQL_CONN.setAutoCommit(false);//multi insert, multi commit
 		
 		StringBuilder createTableSB = new StringBuilder();
-		createTableSB.append("create table testExcel");
+		createTableSB.append("create table " + newTableName);
 		createTableSB.append("(");
 		createTableSB.append("id int primary key AUTO_INCREMENT");  // first title must be id, auto increment
 
 		OLD_COLUMN_NAME_COUNT_MAP = new HashMap<>();//重置一下
 		StringBuilder insertSB = new StringBuilder();
-		insertSB.append("insert into testExcel(");
+		insertSB.append("insert into ");
+		insertSB.append(newTableName);
+		insertSB.append("(");
+		
 		for(int i = 0; i<rowlist.size() ; i++) {
 			
 			String currentCellString = rowlist.get(i).toString().trim();
@@ -99,13 +139,15 @@ public class ExcelToDatabaseUtil {
 		}
 		insertSB.setLength(insertSB.length()-1);//  remove the comma at the end
 		insertSB.append(")");
-		PS = conn.prepareStatement(insertSB.toString());
+		PS = SQL_CONN.prepareStatement(insertSB.toString());
 		
 		createTableSB.append(")");
 		
-		stat.executeUpdate(createTableSB.toString());
+		if(isCreateTable) {
+			stat.executeUpdate(createTableSB.toString());//decide create table or not
+		}
+		
 		stat.close();
-		conn.close();
 	}
 	
 	private static Map<String,Integer> OLD_COLUMN_NAME_COUNT_MAP = new HashMap<>();
@@ -149,31 +191,31 @@ public class ExcelToDatabaseUtil {
 //	}
 	
 	
-	
-	/**
-	 * 废弃的方法
-	 * @param cowSize
-	 * @throws Exception
-	 */
-	private static void createTable2(int cowSize) throws Exception {
-		
-		Connection conn = DriverManager.getConnection(URL, USERNAME, PASS);
-		Statement stat = conn.createStatement();
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("create table testExcel");
-		sb.append("(");
-		sb.append("id int primary key AUTO_INCREMENT");  // first title must be id, auto increment
-
-		for(int i = 0; i<cowSize ; i++) {
-			sb.append(", c" + i + " varchar(400)");
-		}
-		
-		sb.append(")");
-		
-		stat.executeUpdate(sb.toString());
-		stat.close();
-		conn.close();
-	}
+//	
+//	/**
+//	 * 废弃的方法
+//	 * @param cowSize
+//	 * @throws Exception
+//	 */
+//	private static void createTable2(int cowSize) throws Exception {
+//		
+//		Connection conn = DriverManager.getConnection(URL, USERNAME, PASS);
+//		Statement stat = conn.createStatement();
+//		
+//		StringBuilder sb = new StringBuilder();
+//		sb.append("create table testExcel");
+//		sb.append("(");
+//		sb.append("id int primary key AUTO_INCREMENT");  // first title must be id, auto increment
+//
+//		for(int i = 0; i<cowSize ; i++) {
+//			sb.append(", c" + i + " varchar(400)");
+//		}
+//		
+//		sb.append(")");
+//		
+//		stat.executeUpdate(sb.toString());
+//		stat.close();
+//		conn.close();
+//	}
 	
 }
