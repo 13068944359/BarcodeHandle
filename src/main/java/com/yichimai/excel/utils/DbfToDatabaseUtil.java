@@ -1,5 +1,10 @@
 package com.yichimai.excel.utils;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -163,6 +168,53 @@ public class DbfToDatabaseUtil {
 		conn.close();
 	}
 
+	
+	
+	/**
+	 * 检查数据库字段类型和长度信息
+	 * 打印
+	 * 字段名	字段类型	长度
+	 */
+	public static void check() {
+		InputStream fis = null;
+		try{
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("D://check20200929.xiaojz"),false));
+			
+			//读取文件的输入流ba
+			fis = new FileInputStream("D:\\tmp\\202106高考成绩查询测试\\ksy_ytl_zf\\test_1_1.dbf");
+			DBFReader reader = new DBFReader(fis);
+			
+			int fieldsCount = reader.getFieldCount();
+			System.out.println("字段数:"+fieldsCount);
+			//取出字段信息
+			for( int i=0; i<fieldsCount; i++){
+				DBFField field = reader.getField(i);
+				
+				String fieldType = null;
+				if(field.getType().toString().equals("CHARACTER")) {
+					fieldType = "字符型";
+				}else if(field.getType().toString().equals("NUMERIC")){
+					fieldType = "数值型";
+				}
+				
+				System.out.println(field.getName() + "\t" + fieldType + "\t" + field.getLength());
+			}
+			
+		}
+		catch(Exception e)	{
+			e.printStackTrace();
+		}finally{
+			try {
+				fis.close();
+			}catch(Exception e){}
+		}
+		
+		
+	}
+	
+//	private static String getValue(Object o) throws Exception {
+//		return o==null?"":new String(o.toString ().trim().getBytes ("ISO-8859-1"),"GBK");
+//	}
 	
 	
 }
