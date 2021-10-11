@@ -3,7 +3,7 @@
 	<groupId>com.yichimai.excel</groupId>
 	<artifactId>ExcelHandle</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
   
   
   
@@ -161,6 +161,16 @@
 			</plugin>
 			
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/webapp</directory>
+				<targetPath>META-INF/resources</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>BOOT-INF/classes</targetPath>
+			</resource>
+		</resources>
 	</build>
 
 

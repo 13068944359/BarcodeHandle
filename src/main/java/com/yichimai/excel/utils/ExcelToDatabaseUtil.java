@@ -9,10 +9,13 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.lang.Console;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.extra.pinyin.PinyinUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -30,9 +33,7 @@ public class ExcelToDatabaseUtil {
 	public static void main(String[] args) {
 //		Excel07SaxReader reader = new Excel07SaxReader(createRowHandler());
 //		reader.read("d:/1008/test.xlsx", 0);
-		
 	}
-	
 	
 	
 	public static void handle(String databaseType,String DBUrl,String DBUser,String DBPass,
@@ -47,6 +48,9 @@ public class ExcelToDatabaseUtil {
 	
 	private static RowHandler createRowHandler(String databaseType,String DBUrl,String DBUser,String DBPass,
 			String newTableName,Boolean isCreateTable) {
+//		SQL_CONN = DriverManager.getConnection(DBUrl, DBUser, DBPass);
+//		PS = SQL_CONN.prepareStatement(INSERT_SQL);
+		
 	    return new RowHandler() {
 	        @Override
 	        public void handle(int sheetIndex, long rowIndex, List<Object> rowlist) {
@@ -56,7 +60,8 @@ public class ExcelToDatabaseUtil {
 						
 		            }else {
 		            	for(int index=0; index<rowlist.size(); index++	) {
-		    				PS.setString(index + 1, rowlist.get(index).toString().trim());
+//		            		System.out.println(rowlist.get(index).toString());
+		    				PS.setString(index + 1, filterUtf8Mb4(rowlist.get(index).toString().trim()));//过滤掉emoji
 		    			}
 						PS.addBatch(); // one record in batch
 
@@ -67,6 +72,11 @@ public class ExcelToDatabaseUtil {
 	    				}
 		            }
             	} catch (Exception e) {
+            		
+//            		for(int index=0; index<rowlist.size(); index++	) {
+//	            		System.out.print(rowlist.get(index).toString());
+//	    			}
+//            		System.out.println();
 					e.printStackTrace();
 				}
 	        }
@@ -128,7 +138,7 @@ public class ExcelToDatabaseUtil {
 			//确定了字段拼写方式后，需要对字段进行去重操作
 			py = unrepeatColumnName(py);
 			
-			createTableSB.append(", " + py + " varchar(400)");//建表语句加字段
+			createTableSB.append(", " + py + " varchar(1000)");//建表语句加字段
 			
 			insertSB.append( py +  ",");//insert语句加字段
 		}
@@ -162,6 +172,19 @@ public class ExcelToDatabaseUtil {
 			OLD_COLUMN_NAME_COUNT_MAP.put(originName, 1);
 			return originName;
 		}
+	}
+	
+	//java过滤utf8mb4表情符号
+	private static String filterUtf8Mb4(String origin) {
+		if(origin.trim().isEmpty()){
+			return origin;
+		}
+		String pattern="[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]";
+		String reStr="";
+		Pattern emoji=Pattern.compile(pattern);
+		Matcher  emojiMatcher=emoji.matcher(origin);
+		origin=emojiMatcher.replaceAll(reStr);
+		return origin;
 	}
 	
 	
