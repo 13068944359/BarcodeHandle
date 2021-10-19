@@ -10,7 +10,7 @@ spring:
     multipart:
       max-file-size: 3000MB
       max-request-size: 3000MB
-    
+
 xiaojz: 
   downloadPath: /home/xiaojz/download/
 

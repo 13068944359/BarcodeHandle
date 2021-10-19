@@ -42,6 +42,22 @@
 				</div>
 		    </div>
 		  </div>
+		  
+		  <div class="form-group">
+		    <label for="inputPassword" class="col-sm-2 control-label">excel版本：</label>
+		    <div class="col-sm-10">
+		      <div class="btn-group btn-group-justified" role="group" aria-label="...">
+				  <div class="btn-group" role="group">
+				    <button type="button" class="btn btn-primary excelVersion" data-excelVersion="wps">wps</button>
+				  </div>
+				  
+				  <div class="btn-group" role="group">
+				    <button type="button" class="btn btn-default excelVersion" data-excelVersion="excel">excel</button>
+				  </div>
+				</div>
+		    </div>
+		  </div>
+		  
 			
 		<div class="form-group customPara">
 		    <label for="rowNum" class="col-sm-2 control-label">每页的行数：</label>
@@ -91,13 +107,56 @@
 			$(this).removeClass("btn-default");
 			$(this).addClass("btn-primary");
 			
-			console.info($(this).data("landscape"));
-			if($(this).data("landscape") == true){
+			/* if($(this).data("landscape") == true){
 				$("#pageSize").val("33");
 			}else{
 				$("#pageSize").val("50");
-			}
+			} */
+			updateLineNum();
 		});
+		
+		$(".excelVersion").click(function(){
+			$(".excelVersion").removeClass("btn-primary");
+			$(".excelVersion").addClass("btn-default");
+
+			$(this).removeClass("btn-default");
+			$(this).addClass("btn-primary");
+			/* if($(this).data("landscape") == true){
+				$("#pageSize").val("33");
+			}else{
+				$("#pageSize").val("50");
+			} */
+			updateLineNum();
+		});
+		
+		
+		function updateLineNum(){
+			var landscape = $(".pageLandscape.btn-primary").data("landscape");
+			var excelVersion = $(".excelVersion.btn-primary").data("excelversion");
+
+			console.info(landscape);
+			console.info(excelVersion);
+			
+			// landscape 为true 代表横向
+			if(landscape){
+				if(excelVersion == "wps"){
+					$("#pageSize").val("33");//wps横向33行
+				}else if(excelVersion == "excel"){
+					$("#pageSize").val("35");//excel横向暂定35行
+				}else{
+					alert("error");
+				}
+			}else{
+				if(excelVersion == "wps"){
+					$("#pageSize").val("50");//wps纵向50行
+				}else if(excelVersion == "excel"){
+					$("#pageSize").val("57");//excel纵向57行
+				}else{
+					alert("error");
+				}
+			}
+		}
+		
 	
 		$("#submitBtn").click(function(){
 			if(validForm()){
