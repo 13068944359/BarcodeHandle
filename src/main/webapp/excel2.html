@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>excel</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container">
+		<h2 style="text-align:center;margin-bottom:50px;">excel分页工具</h2>
+	
+		<form class="form-horizontal" name="excelForm" id="excelForm">
+		  <div class="form-group customPara">
+		    <label class="col-sm-2 control-label">工作簿下标（从0开始）：</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="workbookIndex" name="workbookIndex" placeholder="请填写正整数" value="4">
+		    </div>
+		  </div>
+		  <div class="form-group customPara">
+		    <label for="cellIndex" class="col-sm-2 control-label">字段下标（从0开始）：</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="cellIndex" name="cellIndex" placeholder="请填写正整数" value="4">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="inputPassword" class="col-sm-2 control-label">导入文件：</label>
+		    <div class="col-sm-10">
+		      <input type="file" class="form-control" id="uploadFile" name="uploadFile" >
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="inputPassword" class="col-sm-2 control-label">页面方向：</label>
+		    <div class="col-sm-10">
+		      <div class="btn-group btn-group-justified" role="group" aria-label="...">
+				  <div class="btn-group" role="group">
+				    <button type="button" class="btn btn-primary pageLandscape" data-landscape="false">纵向（行数更多）</button>
+				  </div>
+				  
+				  <div class="btn-group" role="group">
+				    <button type="button" class="btn btn-default pageLandscape" data-landscape="true">横向（单行信息更多）</button>
+				  </div>
+				</div>
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label for="inputPassword" class="col-sm-2 control-label">excel版本：</label>
+		    <div class="col-sm-10">
+		      <div class="btn-group btn-group-justified" role="group" aria-label="...">
+				  <div class="btn-group" role="group">
+				    <button type="button" class="btn btn-primary excelVersion" data-excelVersion="wps">wps</button>
+				  </div>
+				  
+				  <div class="btn-group" role="group">
+				    <button type="button" class="btn btn-default excelVersion" data-excelVersion="excel">excel</button>
+				  </div>
+				</div>
+		    </div>
+		  </div>
+			
+		<div class="form-group customPara">
+		    <label for="rowNum" class="col-sm-2 control-label">每页的行数：</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="pageSize" name="pageSize" placeholder="请填写正整数" value="51">
+		    </div>
+		  </div>
+			
+		</form>
+		
+		<div style="text-align:center;margin-top:50px;">
+			<button type="button" class="btn btn-primary btn-lg" id="submitBtn">提 交 处 理</button>&nbsp;&nbsp;
+			<button type="button" class="btn btn-default btn-lg" id="customBtn">高 级 选 项</button>
+		</div>
+		
+		<footer>
+		    <hr>
+		
+		    <!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
+		    <p class="pull-right">服务中心-网络信息部</p>
+		    <p>© 2021 xiaojz</p>
+		</footer>
+	</div>
+
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/layer/layer.js"></script>
+	<script type="text/javascript">
+	
+		var applicationPath = "/BarcodeHandle";
+	
+		$(function(){
+			$(".customPara").hide();
+		});
+		
+		$("#customBtn").click(function(){
+			$(".customPara").show();
+			$(this).hide();
+		});
+		
+	
+		$(".pageLandscape").click(function(){
+			$(".pageLandscape").removeClass("btn-primary");
+			$(".pageLandscape").addClass("btn-default");
+
+			$(this).removeClass("btn-default");
+			$(this).addClass("btn-primary");
+			
+			/* if($(this).data("landscape") == true){
+				$("#pageSize").val("33");
+			}else{
+				$("#pageSize").val("50");
+			} */
+			updateLineNum();
+		});
+		
+		$(".excelVersion").click(function(){
+			$(".excelVersion").removeClass("btn-primary");
+			$(".excelVersion").addClass("btn-default");
+
+			$(this).removeClass("btn-default");
+			$(this).addClass("btn-primary");
+			/* if($(this).data("landscape") == true){
+				$("#pageSize").val("33");
+			}else{
+				$("#pageSize").val("50");
+			} */
+			updateLineNum();
+		});
+		
+		
+		function updateLineNum(){
+			var landscape = $(".pageLandscape.btn-primary").data("landscape");
+			var excelVersion = $(".excelVersion.btn-primary").data("excelversion");
+
+			console.info(landscape);
+			console.info(excelVersion);
+			
+			// landscape 为true 代表横向
+			if(landscape){
+				if(excelVersion == "wps"){
+					$("#pageSize").val("34");//wps横向33行
+				}else if(excelVersion == "excel"){
+					$("#pageSize").val("36");//excel横向暂定35行
+				}else{
+					alert("error");
+				}
+			}else{
+				if(excelVersion == "wps"){
+					$("#pageSize").val("51");//wps纵向50行
+				}else if(excelVersion == "excel"){
+					$("#pageSize").val("58");//excel纵向57行
+				}else{
+					alert("error");
+				}
+			}
+		}
+		
+	
+		$("#submitBtn").click(function(){
+			if(validForm()){
+				submit();
+			}
+		});
+		
+		function validForm(){
+			if($("#workbookIndex").val() == ""){
+	 			layer.msg('请先填写“工作簿下标”');
+	 			return false;
+			}
+			
+			if($("#cellIndex").val() == ""){
+	 			layer.msg('请先填写“字段下标”');
+	 			return false;
+			}
+
+			if($("#uploadFile").val() == ""){
+	 			layer.msg('请先上传表格文件');
+	 			return false;
+			}
+			
+			if($("#pageSize").val() == ""){
+	 			layer.msg('请先填写“每页的行数”');
+	 			return false;
+			}
+			return true;
+		}
+		
+		function submit(){
+			var formData = new FormData();
+			formData.append("workbookIndex",$.trim($("#workbookIndex").val()));
+			formData.append("cellIndex",$.trim($("#cellIndex").val()));
+			formData.append("uploadFile",$("#uploadFile")[0].files[0]);
+			formData.append("pageLandscape",$(".pageLandscape.btn-primary").data("landscape"));
+			formData.append("pageSize",$.trim($("#pageSize").val()));
+			
+			loadingLayer = layer.msg('正在加载...', {icon: 16, time:0, shade: [0.1,'#fff']});
+			$.ajax({  
+		         url: applicationPath + "/excel/handleExcel2",  
+		         type: 'POST',  
+		         data: formData,  async: true,   cache: false,   contentType: false,  dataType: 'json',
+		         processData: false,  
+		         success: function (data) {
+		 			layer.close(loadingLayer);
+		 			layer.msg('处理完成');
+		 			if(data.rtResponse != null && data.rtResponse.rt_code == 200){
+		 				var fileName = data.rtResponse.rtResult.name;
+		 				location.href = applicationPath + "/excel/downloadExcel?fileName=" + fileName;
+		 			}else if(data.rtResponse != null && data.rtResponse.rt_code == 403){
+		 				layer.msg("会话超时，请刷新页面后重试");
+					}else{
+						layer.msg("请求失败，请联系管理员");
+					}
+		         },  
+		         error: function (data) {  
+		        	 layerout("文件导入失败");  
+		             console.info(data);
+		         }  
+		    });
+		}
+		
+		
+		
+		$("#uploadFile").change(function(){
+			if($("#uploadFile")[0].value == "" ){
+				return;
+			}
+			// if file is not xlsx , delete it and notice user
+		   var fileName=$("#uploadFile")[0].value;  
+			console.info(fileName);
+		   var suffixIndex=fileName.lastIndexOf(".");  
+		   var suffix=fileName.substring(suffixIndex+1).toUpperCase();  
+		   if(suffix!="XLSX" && suffix!="XLS"){  
+				layer.msg('请上传excel表格文件');
+				$("#uploadFile")[0].value = "";
+				return;
+		   }
+		});
+		
+		
+	
+	</script>
+</body>
+</html>

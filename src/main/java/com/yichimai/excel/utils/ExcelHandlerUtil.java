@@ -32,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
  * 2020.1.14 由于代码冗余过多，废弃
  * 另用ExcelHandlerUtil2
  */
+
+@Deprecated
 public class ExcelHandlerUtil {
 	private static int ROW_NUM_EVERY_PAGE_XLSX_PORTRAIT = 50;  //每一页的行数（竖）
 	private static int ROW_NUM_EVERY_PAGE_XLSX_TRANSVERSE = 33;  //每一页的行数（横）
