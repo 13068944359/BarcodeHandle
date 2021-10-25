@@ -1,0 +1,69 @@
+
+#transBackground{
+	list-style-type: none;
+	position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: -2;
+    /*background: #aaa;*/
+}
+
+
+#transBackground>li>span{
+	width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-size: cover;
+    background-repeat: none;
+    z-index: -2;
+    opacity: 0;
+    -webkit-animation: imageAnimation 15s linear infinite 0s;
+    -moz-animation: imageAnimation 15s linear infinite 0s;
+    -o-animation: imageAnimation 15s linear infinite 0s;
+    -ms-animation: imageAnimation 15s linear infinite 0s;
+    animation: imageAnimation 15s linear infinite 0s;
+}
+#transBackground>li:nth-child(1)>span{
+    background: url(/BarcodeHandle/image/bg1.jpg) no-repeat;
+    background-position: 50% 50%;
+}
+#transBackground>li:nth-child(2)>span{
+    background: url(/BarcodeHandle/image/bg2.jpg) no-repeat;
+    background-position: 50% 50%;
+    -webkit-animation-delay:5s;-moz-animation-delay:5s;-o-animation-delay:5s;-ms-animation-delay:5s;animation-delay:5s;
+}
+#transBackground>li:nth-child(3)>span{
+    background: url(/BarcodeHandle/image/bg3.jpg) no-repeat;
+    background-position: 50% 50%;
+    -webkit-animation-delay:10s;-moz-animation-delay:10s;-o-animation-delay:10s;-ms-animation-delay:10s;animation-delay:10s;
+}
+
+@keyframes imageAnimation{
+    0% {
+		opacity:0;
+		transform:scale(1.0);
+	}
+	8% {
+		opacity:1;
+		transform:scale(1.02);
+	}
+	25%{
+		opacity:1;
+		transform:scale(1.06);
+	}
+	40%{
+		opacity:1;
+		transform:scale(1.1);
+	}
+	50%{
+		opacity:0;
+	}
+	100% {
+		opacity:0;
+		transform:scale(1.1);
+	}
+}

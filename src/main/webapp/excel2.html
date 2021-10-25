@@ -10,6 +10,17 @@
 		<h2 style="text-align:center;margin-bottom:50px;">excel分页工具</h2>
 	
 		<form class="form-horizontal" name="excelForm" id="excelForm">
+		  <div class="form-group">
+		    <label for="cellIndex" class="col-sm-2 control-label">考试类型：</label>
+		    <div class="col-sm-10">
+		      <select class="form-control" id="examType" name="examType">
+				  <option value="">请选择</option>
+				  <option value="jszg">教师资格</option>
+
+				</select>
+		    </div>
+		  </div>
+		
 		  <div class="form-group customPara">
 		    <label class="col-sm-2 control-label">工作簿下标（从0开始）：</label>
 		    <div class="col-sm-10">
@@ -58,10 +69,17 @@
 		    </div>
 		  </div>
 			
-		<div class="form-group customPara">
+		  <div class="form-group customPara">
 		    <label for="rowNum" class="col-sm-2 control-label">每页的行数：</label>
 		    <div class="col-sm-10">
 		      <input type="text" class="form-control" id="pageSize" name="pageSize" placeholder="请填写正整数" value="51">
+		    </div>
+		  </div>
+			
+		  <div class="form-group customPara">
+		    <label for="rowNum" class="col-sm-2 control-label">页眉标题：</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="pageTitle" name="pageTitle" >
 		    </div>
 		  </div>
 			
@@ -105,13 +123,15 @@
 
 			$(this).removeClass("btn-default");
 			$(this).addClass("btn-primary");
-			
-			/* if($(this).data("landscape") == true){
-				$("#pageSize").val("33");
-			}else{
-				$("#pageSize").val("50");
-			} */
 			updateLineNum();
+		});
+		
+		$("#examType").change(function(){
+			var currentType = $("#examType").val();
+			if(currentType == "jszg"){
+				$("#cellIndex").val("3");
+				$("#pageTitle").val("教师资格");
+			}
 		});
 		
 		$(".excelVersion").click(function(){
@@ -120,11 +140,6 @@
 
 			$(this).removeClass("btn-default");
 			$(this).addClass("btn-primary");
-			/* if($(this).data("landscape") == true){
-				$("#pageSize").val("33");
-			}else{
-				$("#pageSize").val("50");
-			} */
 			updateLineNum();
 		});
 		
@@ -164,6 +179,11 @@
 		});
 		
 		function validForm(){
+			if($("#examType").val() == ""){
+	 			layer.msg('请先选择考试类型');
+	 			return false;
+			}
+			
 			if($("#workbookIndex").val() == ""){
 	 			layer.msg('请先填写“工作簿下标”');
 	 			return false;
@@ -193,6 +213,9 @@
 			formData.append("uploadFile",$("#uploadFile")[0].files[0]);
 			formData.append("pageLandscape",$(".pageLandscape.btn-primary").data("landscape"));
 			formData.append("pageSize",$.trim($("#pageSize").val()));
+			formData.append("examType",$.trim($("#examType").val()));
+			formData.append("pageTitle",$.trim($("#pageTitle").val()));
+			
 			
 			loadingLayer = layer.msg('正在加载...', {icon: 16, time:0, shade: [0.1,'#fff']});
 			$.ajax({  
@@ -218,7 +241,6 @@
 		         }  
 		    });
 		}
-		
 		
 		
 		$("#uploadFile").change(function(){

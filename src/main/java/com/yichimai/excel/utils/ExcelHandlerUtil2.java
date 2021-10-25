@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Footer;
 import org.apache.poi.ss.usermodel.FormulaError;
+import org.apache.poi.ss.usermodel.Header;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -53,7 +54,7 @@ public class ExcelHandlerUtil2 {
 	private static float HEIGHT_PT =  (float)14.25;//每一行的高度
 	private static int NEW_SHEET_LINE_INDEX = 0;
 	
-	public static void paging(int sheetIndex,int schoolCodeCellIndex,boolean landscape,
+	public static void paging(String pageTitle,String examType,int sheetIndex,int schoolCodeCellIndex,boolean landscape,
 			int pageSize,MultipartFile uploadFile,String targetFilePath) throws Exception {
 		
 	    String fileName = uploadFile.getOriginalFilename();// 获取文件名
@@ -70,43 +71,37 @@ public class ExcelHandlerUtil2 {
         }
 	    
 	    NEW_SHEET_LINE_INDEX = 0;//初始化必要变量
-	    handle_generate_file(sheetIndex, schoolCodeCellIndex, landscape, pageSize, wb, uploadFile, targetFilePath);
-	}
-	
-	/**
-	 * 2.0 根据类型处理
-	 */
-	private static void handle_generate_file(int sheetIndex,int schoolCodeCellIndex,boolean landscape,
-			int pageSize,Workbook wb,MultipartFile uploadFile,String targetFilePath) {
-		try{
-//			SXSSFWorkbook  // 用于处理大数据量以及超大数据量的导出
-			SXSSFWorkbook newWorkbook=new SXSSFWorkbook();//创建Excel文件薄
-	        SXSSFSheet newSheet=newWorkbook.createSheet();//创建工作表sheeet
-	        
-	        CellStyle newCellStyle = createCommonStyle(newWorkbook);//create common cell style
-	        
-	        PrintSetup ps = newSheet.getPrintSetup();
-	        ps.setPaperSize(PrintSetup.A4_PAPERSIZE);
-	        ps.setLandscape(landscape); // 打印方向，true：横向，false：纵向
-//	        newSheet.setRepeatingRows(CellRangeAddress.valueOf("1:1"));//设置页眉为表格头 //2.0版本表格头要求显示对应的学校代码和名称，因此需要手动实现
-			
-	        Footer newFooter = newSheet.getFooter();
-	        newFooter.setCenter(HSSFFooter.page()+" / "+HSSFFooter.numPages());
-	        
-	        handle_excute_rule( wb, sheetIndex, schoolCodeCellIndex, pageSize, newWorkbook, newSheet, newCellStyle);
-	        
-	        FileOutputStream fileOut = new FileOutputStream(targetFilePath);
-            newWorkbook.write(fileOut);
-            newWorkbook.close();
-            fileOut.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage());
-		}
+//	    SXSSFWorkbook  // 用于处理大数据量以及超大数据量的导出
+		SXSSFWorkbook newWorkbook=new SXSSFWorkbook();//创建Excel文件薄
+        SXSSFSheet newSheet=newWorkbook.createSheet();//创建工作表sheeet
+        
+        CellStyle newCellStyle = createCommonStyle(newWorkbook);//create common cell style
+        
+        PrintSetup ps = newSheet.getPrintSetup();
+        ps.setPaperSize(PrintSetup.A4_PAPERSIZE);
+        ps.setLandscape(landscape); // 打印方向，true：横向，false：纵向
+//        newSheet.setRepeatingRows(CellRangeAddress.valueOf("1:1"));//设置页眉为表格头 //2.0版本表格头要求显示对应的学校代码和名称，因此需要手动实现
 		
+        if(pageTitle != null) {
+        	Header header = newSheet.getHeader();
+        	header.setCenter(pageTitle);
+        }
+        
+        Footer newFooter = newSheet.getFooter();
+        newFooter.setCenter(HSSFFooter.page()+" / "+HSSFFooter.numPages());
+        newFooter.setLeft("禁止先勾再检查，禁止连续勾几行");
+        newFooter.setRight("技术支持：xiaojz");
+        
+        handle_split_by_school(examType, wb, sheetIndex, schoolCodeCellIndex, pageSize, newWorkbook, newSheet, newCellStyle);
+        
+        FileOutputStream fileOut = new FileOutputStream(targetFilePath);
+        newWorkbook.write(fileOut);
+        newWorkbook.close();
+        fileOut.close();
 	}
 	
-	private static void handle_excute_rule(Workbook wb,int sheetIndex,int schoolCodeCellIndex,int pageSize,
+		
+	private static void handle_split_by_school(String examType,Workbook wb,int sheetIndex,int schoolCodeCellIndex,int pageSize,
 			SXSSFWorkbook newWorkbook,SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
 		int newSheetLineIndex = 0;
     	Sheet sheet = wb.getSheetAt(sheetIndex);//获取sheet对象 
@@ -127,17 +122,36 @@ public class ExcelHandlerUtil2 {
         	if(currentSchoolCode.equals(schoolCode)) {
         		schoolListCache.add(currentRow);// add item to listCache
         	}else {
-        		handle_school_jszgz(  sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
+        		handle_school_data(examType, sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
         		
         		currentSchoolCode = schoolCode;
         		schoolListCache.clear();// 清空缓存
         		schoolListCache.add(currentRow);// add item to listCache
         	}
         }
-		handle_school_jszgz(  sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
+    	handle_school_data(examType, sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
 	}
 	
-	private static final int COLUMN_SIZE_JSZG = 5;//教师资格在新版式里面的一个大列里面有多少小列
+	
+	private static void handle_school_data(String examType,int sheetIndex,int schoolCodeCellIndex,
+			 List<Row> schoolListCache,int pageSize,
+			SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
+		
+		switch (examType) {
+		case "jszg":
+			handle_school_jszgz(  sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
+			break;
+
+		default:
+            throw new Exception("examType error");
+		}
+		
+	}
+	
+	
+	
+	private static final int JSZG_COLUMN_IN_COLUMN_SIZE = 5;//教师资格在新版式里面的一个大列里面有多少小列
+	private static final int JSZG_COLUMN_SIZE = 3;//教师资格在新版式里面有 多少个大列
 	
 	//教师资格证 右侧列数：5
 	//表头字段：省份代码	考区代码	考区名称	考点代码	考点名称
@@ -147,16 +161,16 @@ public class ExcelHandlerUtil2 {
 			SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
 		//设置好列宽
 		newSheet.setDefaultColumnWidth(7*256);//设置7个字符的宽度（7个数字）
-		newSheet.setColumnWidth(COLUMN_SIZE_JSZG*0 + 0, 5*256);//第一列
-		newSheet.setColumnWidth(COLUMN_SIZE_JSZG*1 + 0, 5*256);
-		newSheet.setColumnWidth(COLUMN_SIZE_JSZG*2 + 0, 5*256);
+		newSheet.setColumnWidth(JSZG_COLUMN_IN_COLUMN_SIZE*0 + 0, 5*256);//第一列
+		newSheet.setColumnWidth(JSZG_COLUMN_IN_COLUMN_SIZE*1 + 0, 5*256);
+		newSheet.setColumnWidth(JSZG_COLUMN_IN_COLUMN_SIZE*2 + 0, 5*256);
 
-		newSheet.setColumnWidth(COLUMN_SIZE_JSZG*0 + 3, 5*256);//“检查”列
-		newSheet.setColumnWidth(COLUMN_SIZE_JSZG*1 + 3, 5*256);
-		newSheet.setColumnWidth(COLUMN_SIZE_JSZG*2 + 3, 5*256);
+		newSheet.setColumnWidth(JSZG_COLUMN_IN_COLUMN_SIZE*0 + 3, 5*256);//“检查”列
+		newSheet.setColumnWidth(JSZG_COLUMN_IN_COLUMN_SIZE*1 + 3, 5*256);
+		newSheet.setColumnWidth(JSZG_COLUMN_IN_COLUMN_SIZE*2 + 3, 5*256);
 
-		newSheet.setColumnWidth(COLUMN_SIZE_JSZG*0 + 4, 2*256);//空白列
-		newSheet.setColumnWidth(COLUMN_SIZE_JSZG*1 + 4, 2*256);
+		newSheet.setColumnWidth(JSZG_COLUMN_IN_COLUMN_SIZE*0 + 4, 2*256);//空白列
+		newSheet.setColumnWidth(JSZG_COLUMN_IN_COLUMN_SIZE*1 + 4, 2*256);
 		
 		/**
 		 * 数据的预处理，先把数据加工好，再去填充新sheet
@@ -180,7 +194,7 @@ public class ExcelHandlerUtil2 {
 			sb.append(rowOfSchool.getCell(8).getStringCellValue().toString());//姓名
 			sb.append("-");
 			sb.append(rowOfSchool.getCell(9).getStringCellValue().toString());//姓名
-			sb.append("- ");
+			sb.append("- ");// add an extra space, make last cell have border
 			targetStrList.add(sb.toString());
 		}
 		
@@ -192,15 +206,15 @@ public class ExcelHandlerUtil2 {
 		int columnIndexOfPageList = 0;//记录已经写到第几列 0开始
 		boolean evenPage = false;//偶数页码？不是就需要补充一页空白
 
-		createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, COLUMN_SIZE_JSZG);
+		createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, JSZG_COLUMN_IN_COLUMN_SIZE);
 		for(String targetStr : targetStrList) {
 			if(targetStr.length() == 0) {
 				//空白行
 			}else {
 				String[] split = targetStr.split("-");
 				for(int index = 0;index < split.length; index++) {
-					pageList.get(rowIndexOfPageList).getCell(columnIndexOfPageList*COLUMN_SIZE_JSZG + index).setCellValue(split[index]);
-					pageList.get(rowIndexOfPageList).getCell(columnIndexOfPageList*COLUMN_SIZE_JSZG + index).setCellStyle(newCellStyle);
+					pageList.get(rowIndexOfPageList).getCell(columnIndexOfPageList*JSZG_COLUMN_IN_COLUMN_SIZE + index).setCellValue(split[index]);
+					pageList.get(rowIndexOfPageList).getCell(columnIndexOfPageList*JSZG_COLUMN_IN_COLUMN_SIZE + index).setCellStyle(newCellStyle);
 				}
 			}
 			
@@ -208,17 +222,17 @@ public class ExcelHandlerUtil2 {
 			if(rowIndexOfPageList == pageSize) {
 				rowIndexOfPageList = 1;//重新开始的1行
 				columnIndexOfPageList++;
-				if(columnIndexOfPageList == 3) {
+				if(columnIndexOfPageList == JSZG_COLUMN_SIZE) {
 					columnIndexOfPageList = 0;//重新开始的1页，从0列开始
 					//创建新开始的1页
-					createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, COLUMN_SIZE_JSZG);
+					createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, JSZG_COLUMN_IN_COLUMN_SIZE);
 					
 					evenPage = !evenPage;//标记是否偶数页
 				}
 			}
 		}
 		if(!evenPage) {//不是偶数页
-			createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, COLUMN_SIZE_JSZG);
+			createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, JSZG_COLUMN_IN_COLUMN_SIZE);
 		}
 		
 	}
