@@ -204,9 +204,9 @@ public class ExcelHandlerUtil2 {
 		List<SXSSFRow> pageList = new LinkedList<>();
 		int rowIndexOfPageList = 1; //记录已经写到第几行 0开始（由于第一行默认是院校代码，所以从1开始）
 		int columnIndexOfPageList = 0;//记录已经写到第几列 0开始
-		boolean evenPage = false;//偶数页码？不是就需要补充一页空白
+		boolean evenPage = false;//判断是否偶数页码？不是就需要补充一页空白
 
-		createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, JSZG_COLUMN_IN_COLUMN_SIZE);
+		createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, JSZG_COLUMN_IN_COLUMN_SIZE,evenPage);
 		for(String targetStr : targetStrList) {
 			if(targetStr.length() == 0) {
 				//空白行
@@ -225,21 +225,19 @@ public class ExcelHandlerUtil2 {
 				if(columnIndexOfPageList == JSZG_COLUMN_SIZE) {
 					columnIndexOfPageList = 0;//重新开始的1页，从0列开始
 					//创建新开始的1页
-					createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, JSZG_COLUMN_IN_COLUMN_SIZE);
-					
 					evenPage = !evenPage;//标记是否偶数页
+					createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, JSZG_COLUMN_IN_COLUMN_SIZE,evenPage);
 				}
 			}
 		}
 		if(!evenPage) {//不是偶数页
-			createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, JSZG_COLUMN_IN_COLUMN_SIZE);
+			evenPage = !evenPage;//标记是否偶数页
+			createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, JSZG_COLUMN_IN_COLUMN_SIZE,evenPage);
 		}
-		
 	}
 	
-	
 	private static void createNewPage(int pageSize,int schoolCodeCellIndex,SXSSFSheet newSheet,
-			List<SXSSFRow> pageList, List<Row> schoolListCache, int columnSize) {
+			List<SXSSFRow> pageList, List<Row> schoolListCache, int columnSize, boolean evenPage) {
 		pageList.clear();
 		for(int count = 0;count < pageSize; count++) {  //先创建一整页空行
 			SXSSFRow newSheetRow = newSheet.createRow(NEW_SHEET_LINE_INDEX++);
@@ -253,8 +251,16 @@ public class ExcelHandlerUtil2 {
 		}
 		
 		//创建完成新页之后，写院校代码
-		copyCell(schoolListCache.get(0).getCell(schoolCodeCellIndex), pageList.get(0).getCell(0));//学校编码第1列
-		copyCell(schoolListCache.get(0).getCell(schoolCodeCellIndex+1), pageList.get(0).getCell(2));//学校名称第3列
+		String schoolCode = schoolListCache.get(0).getCell(schoolCodeCellIndex).getStringCellValue().toString();
+		String schoolName = schoolListCache.get(0).getCell(schoolCodeCellIndex+1).getStringCellValue().toString();
+		pageList.get(0).getCell(0).setCellValue("考点代码：" + schoolCode);
+		pageList.get(0).getCell(3).setCellValue("考点名称：" + schoolName);
+//		copyCell(schoolListCache.get(0).getCell(schoolCodeCellIndex), pageList.get(0).getCell(1));//学校编码第1列
+//		copyCell(schoolListCache.get(0).getCell(schoolCodeCellIndex+1), pageList.get(0).getCell(2));//学校名称第3列
+		if(!evenPage) {
+			pageList.get(0).getCell(10).setCellValue("组别：____");
+			pageList.get(0).getCell(12).setCellValue("签名：______");
+		}
 	}
 	
 	
