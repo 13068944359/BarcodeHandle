@@ -255,9 +255,7 @@ public class ExcelHandlerUtil2 {
 			sb.append("- ");// add an extra space, make last cell have border
 			targetStrList.add(sb.toString());
 		}
-		
 		targetStrList.remove(0);//去掉第一个空行
-		
 		
 		List<SXSSFRow> pageList = new LinkedList<>();
 		int rowIndexOfPageList = 1; //记录已经写到第几行 0开始（由于第一行默认是院校代码，所以从1开始）
@@ -298,9 +296,9 @@ public class ExcelHandlerUtil2 {
 		String[] split = spilitSchoolCellIndex.split(",");//用英文逗号作分隔符
 		String result = "";
 		for(String s : split) {
-			result += r.getCell(Integer.valueOf(s)).getStringCellValue();
+			result += r.getCell(Integer.valueOf(s)).getStringCellValue() + "-";
 		}
-		return result;
+		return result.substring(0, result.length()-1);
 	}
 	
 	private static void createNewPage(int pageSize,String spilitSchoolCellIndex,SXSSFSheet newSheet,

@@ -216,9 +216,11 @@
 		
 		function updateLineNum(){
 			// landscape 为true 代表横向
-			if($("#excelVersion").val() == "true"){
+			if($("#excelVersion").val() == "wps"){
+				console.info("change")
 				$("#pageSize").val("51");//wps纵向50行
-			}else{
+			}else if($("#excelVersion").val() == "excel"){
+				console.info("change")
 				$("#pageSize").val("58");//excel纵向57行
 			}
 		}
@@ -308,7 +310,6 @@
 			if($("#" + uploadElementId)[0].value == "" ){
 				return;
 			}
-			console.info("change");
 		   validFileAndSubmit($("#" + uploadElementId)[0].files[0]);
 		   $("#" + uploadElementId).val("");//清空上传框
 		});
@@ -323,7 +324,6 @@
 		
 		
 		function validFileType(fileName){
-			console.info("valid");
 		   var suffixIndex=fileName.lastIndexOf(".");  
 		   var suffix=fileName.substring(suffixIndex+1).toUpperCase();  
 		   if(suffix!="XLSX" && suffix!="XLS"){  
