@@ -51,6 +51,9 @@ import com.yichimai.excel.controller.DbfToDatabaseController;
  * 教师资格证考试
  * 学业水平考试（院校的index不同）
  * 研究生考试：虽然多了“单元划分”，但是仅凭科目即可保证唯一，因此同样使用科目进行划分（2021-12-09）
+ * 
+ * 2021-12-14 增加了多个字段划分学校的逻辑（多个字段用逗号分割，会被合并在一起打印在页头）
+ * 决定去掉“横向”的打印方式，行高统一为12.5
  *
  */
 public class ExcelHandlerUtil2 {

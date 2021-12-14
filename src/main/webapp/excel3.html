@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>excel</title>
+<link rel="stylesheet" href="lib/bootstrap-4.6.1/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="lib/customFormBasedOnBootstrap4/input-material.css">
+<link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css">
+<style type="text/css">
+#uploadDiv {
+	width: 60%;
+	height: 400px;
+	/* background-color: rgba(250,250,250,0.7); */
+	border-radius: 20px;
+	border: 5px dashed #fff;
+	margin: 0px auto;
+	margin-bottom: 10px;
+	padding-top: 100px;
+	font-size: 20px;
+}
+
+#uploadDiv>p {
+	text-align: center;
+}
+
+#uploadDiv:hover {
+	cursor: pointer;
+	color: #007bff;
+	border: 5px dashed #007bff;
+}
+
+.form-group.input-material .form-control:focus, .form-group.input-material .form-control[value]:not([value=""]){
+	border-bottom-color: #ffffff;
+	color: #007bff;
+	font-size: 30px;
+}
+.form-group.input-material .form-control:focus ~ label, .form-group.input-material .form-control[value]:not([value=""]) ~ label{
+	color: #FFFFFF;
+}
+</style>
+</head>
+<body>
+	<ul id="transBackground">
+		<li><span></span></li>
+		<li><span></span></li>
+		<li><span></span></li>
+	</ul>
+	<div class="container"
+		style="color: #fff; background-color: rgba(0, 0, 0, 0.5);">
+		<h2	style="text-align: center; margin-bottom: 10px; padding-top: 70px; color: #fff;">excel分页工具3.0</h2>
+
+		<form class="form-horizontal" name="excelForm" id="excelForm">
+			
+			<div class="row">
+				<div class="col-md-3" ></div>
+				<div class="col-md-3" >
+					<div class="form-group input-material">
+						<select class="form-control" id="examType" style="border-bottom: 2px solid #ffffff;font-size:30px;color: #007bff;">
+							<option value=""></option>
+							<option value="jszg">教师资格</option>
+							<option value="sk">术科</option>
+							<option value="sy">硕士研究生</option>
+					  	</select>
+				    	<input type="hidden" class="form-control" id="examTypeInput" required>
+				    	<label for="name-field">考试类型：</label>
+					</div>
+				</div>
+				
+				<div class="col-md-3" >
+					<div class="form-group input-material">
+						<select class="form-control" id="excelVersion" style="border-bottom: 2px solid #ffffff;font-size:30px;color: #007bff;">
+							<option value=""></option>
+							<option value="wps">wps</option>
+							<option value="excel">excel</option>
+					  	</select>
+				    	<input type="hidden" class="form-control" id="excelVersionInput" required>
+				    	<label for="name-field">excel版本：</label>
+					</div>
+				</div>
+				<div class="col-md-3" ></div>
+				
+			</div>
+			
+			<div id="uploadDiv" style="position: relative">
+				<div id="logDisplay">
+					<!-- <p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p> -->
+				</div>
+				<p id="uploadIcon" style="font-size: 80px;"><i class="fa fa-cloud-upload"></i></p>
+				<p>点击上传</p>
+				<p>或直接将excel文件拖入此区域</p>
+			</div>
+
+			<div style="width: 70%; height: 20px; margin: 0px auto; margin-bottom: 10px;">
+				<a href="javascript:void(0);" id="customBtn"style="color: #fff; float: right; padding-right: 20px;">高级选项</a>
+			</div>
+			
+			
+			<div class="row">
+				<div class="col-md-4 customPara" >
+					<div class="form-group input-material">
+					      <input type="text" class="form-control" id="workbookIndex" value="4">
+					      <label for="name-field">工作簿下标（从0开始）：</label>
+					</div>
+				</div>
+				
+				<div class="col-md-4 customPara" >
+					<div class="form-group input-material">
+					      <input type="text" class="form-control" id="spilitSchoolCellIndex" value="4">
+					      <label for="name-field">字段下标（从0开始）：</label>
+					</div>
+				</div>
+				
+				<div class="col-md-4 customPara" >
+					<div class="form-group input-material">
+					      <input type="text" class="form-control" id="pageSize" value="51">
+					      <label for="name-field">每页的行数：</label>
+					</div>
+				</div>
+				<div class="col-md-12 customPara" >
+					<div class="form-group input-material">
+					      <input type="text" class="form-control" id="pageTitle" value="条形码校对表">
+					      <label for="name-field">页眉标题：</label>
+					</div>
+				</div>
+			</div>
+
+		</form>
+
+
+		<footer style="color: #fff;">
+			<hr style="border-top: 2px solid #fff;">
+			<!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
+			<p class="pull-right">服务中心-网络信息部</p>
+			<p>© 2021 xiaojz</p>
+		</footer>
+	</div>
+
+	<script src="js/jquery.min.js"></script>
+    <script src="lib/bootstrap-4.6.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/customFormBasedOnBootstrap4/materialize-inputs.jquery.js"></script>
+	<script src="js/layer/layer.js"></script>
+	<script src="js/xiaojzUpload.js"></script>
+	<script src="js/xiaojzAnimation.js"></script>
+	<script type="text/javascript">
+		//禁止浏览器打开文件行为	
+		document.addEventListener("drop",function(e){e.preventDefault();});
+		document.addEventListener("dragleave",function(e){e.preventDefault();});
+		document.addEventListener("dragenter",function(e){e.preventDefault();});
+		document.addEventListener("dragover",function(e){e.preventDefault();});
+	
+		var applicationPath = "/BarcodeHandle";
+	
+		$(function(){
+			$('body').materializeInputs();
+			//$('form').materializeInputs(".input-material");
+			$(".customPara").hide();
+			console.info("萧家洲联系电话：13660004900");
+			
+			
+		});
+		
+		$("#customBtn").click(function(){
+			$(".customPara").show();
+
+			var widthStr = $("#uploadDiv").css("width");
+			var widthVal = Number(widthStr.match(/\d+/)[0]);//元素原值
+			widthVal *= 1.2;
+			
+			xiaojzAni.startElasticAni("#uploadDiv","height",200,10);
+			xiaojzAni.startElasticAni("#uploadDiv","width",widthVal,10);
+			xiaojzAni.startSlowAni("#uploadDiv","font-size",15,10);
+			xiaojzAni.startSlowAni("#uploadIcon","font-size",40,10);
+			xiaojzAni.startSlowAni("#uploadDiv","padding-top",20,10);
+			$(this).hide();
+		});
+	
+		$("#examType").change(function(){
+			$("#examTypeInput").val($("#examType").val());
+			var currentType = $("#examType").val();
+			if(currentType == "jszg"){
+				$("#spilitSchoolCellIndex").val("3");
+				$("#pageTitle").val("教师资格考试条形码校对表");
+				$("#workbookIndex").val("4");
+			}else if(currentType == "sk"){
+				$("#spilitSchoolCellIndex").val("4");
+				$("#pageTitle").val("术科考试条形码校对表");
+				$("#workbookIndex").val("4");
+			}else if(currentType == "sy"){
+				$("#spilitSchoolCellIndex").val("0,2");
+				$("#pageTitle").val("硕士研究生考试条形码校对表");
+				$("#workbookIndex").val("3");
+			}
+		});
+		
+		$("#excelVersion").change(function(){
+			if($("#excelVersion").val() != "" ){
+				updateLineNum();
+			}
+			
+			$("#excelVersionInput").val($("#excelVersion").val());
+		});
+		
+		
+		function updateLineNum(){
+			// landscape 为true 代表横向
+			if($("#excelVersion").val() == "true"){
+				$("#pageSize").val("51");//wps纵向50行
+			}else{
+				$("#pageSize").val("58");//excel纵向57行
+			}
+		}
+		
+		
+		function validForm(){
+			if($("#examType").val() == ""){
+	 			layer.msg('请先选择考试类型');
+	 			return false;
+			}
+			if($("#excelVersion").val() == ""){
+	 			layer.msg('请先选择excel版本');
+	 			return false;
+			}
+			if($("#workbookIndex").val() == ""){
+	 			layer.msg('请先填写“工作簿下标”');
+	 			return false;
+			}
+			if($("#cellIndex").val() == ""){
+	 			layer.msg('请先填写“字段下标”');
+	 			return false;
+			}
+			if($("#pageSize").val() == ""){
+	 			layer.msg('请先填写“每页的行数”');
+	 			return false;
+			}
+			return true;
+		}
+		
+		
+		
+		
+		
+		function submit(excelFile){
+			var formData = new FormData();
+			formData.append("workbookIndex",$.trim($("#workbookIndex").val()));
+			formData.append("spilitSchoolCellIndex",$.trim($("#spilitSchoolCellIndex").val()));
+			formData.append("uploadFile",excelFile);
+			formData.append("pageLandscape","false");//默认纵向，不再提供横向选项
+			formData.append("pageSize",$.trim($("#pageSize").val()));
+			formData.append("examType",$.trim($("#examType").val()));
+			formData.append("pageTitle",$.trim($("#pageTitle").val()));
+			
+			loadingLayer = layer.msg('正在加载...', {icon: 16, time:0, shade: [0.1,'#fff']});
+			$.ajax({  
+		         url: applicationPath + "/excel/handleExcel2",  
+		         type: 'POST',  
+		         data: formData,  async: true,   cache: false,   contentType: false,  dataType: 'json',
+		         processData: false,  
+		         success: function (data) {
+		 			layer.close(loadingLayer);
+		 			layer.msg('处理完成');
+		 			if(data.rtResponse != null && data.rtResponse.rt_code == 200){
+		 				var fileName = data.rtResponse.rtResult.name;
+		 				location.href = applicationPath + "/excel/downloadExcel?fileName=" + fileName;
+		 			}else if(data.rtResponse != null && data.rtResponse.rt_code == 403){
+		 				layer.msg("会话超时，请刷新页面后重试");
+					}else{
+						layer.msg("请求失败，请联系管理员");
+					}
+		         },  
+		         error: function (data) {  
+		        	 layerout("文件导入失败");  
+		             console.info(data);
+		         }  
+		    });
+		}
+		
+		function validFileAndSubmit(excelFile){
+			if(excelFile.size > 10 * 1000 * 1000){ //限制10M
+				alert("文件超过10M，请检查是否文件异常");
+				return false;
+			}
+			
+			var fileName = excelFile.name;//获取文件名称
+			console.info(fileName);
+			if(validFileType(fileName) && validForm()){
+				//validate form
+				submit(excelFile);
+			}
+			
+		}
+		
+		
+		var uploadElementId = initUploadElement("#uploadDiv");//自定义的上传组件By xiaojz
+		$("#" + uploadElementId).change(function(){
+			if($("#" + uploadElementId)[0].value == "" ){
+				return;
+			}
+			console.info("change");
+		   validFileAndSubmit($("#" + uploadElementId)[0].files[0]);
+		   $("#" + uploadElementId).val("");//清空上传框
+		});
+		
+		$("#uploadDiv")[0].addEventListener("drop",function(e){
+			var fileList = e.dataTransfer.files;
+			if(fileList.length = 0){
+				return false;
+			}
+			validFileAndSubmit(fileList[0]);
+		});
+		
+		
+		function validFileType(fileName){
+			console.info("valid");
+		   var suffixIndex=fileName.lastIndexOf(".");  
+		   var suffix=fileName.substring(suffixIndex+1).toUpperCase();  
+		   if(suffix!="XLSX" && suffix!="XLS"){  
+				layer.msg('请上传excel表格文件');
+				return false;
+		   }else{
+			   return true;
+		   }
+		}
+		
+		
+	
+	</script>
+</body>
+</html>
