@@ -71,7 +71,7 @@ public class ExcelHandleController {
 	
 	@ResponseBody
 	@PostMapping("/handleExcel2")
-	public Object handleExcel2(String pageTitle,String workbookIndex,String cellIndex,MultipartFile uploadFile,
+	public Object handleExcel2(String pageTitle,String workbookIndex,String spilitSchoolCellIndex,MultipartFile uploadFile,
 			String pageLandscape,String pageSize,String examType,HttpServletResponse response) {
 		checkDir();
 		Map<String, Object> result = null;
@@ -79,7 +79,7 @@ public class ExcelHandleController {
 			String nowStr = DTF_YMDHMS.format(ZonedDateTime.now());
 			String targetFileName = "excelOutput" + nowStr + ".xlsx";
 			
-			ExcelHandlerUtil2.paging(pageTitle,examType,Integer.valueOf(workbookIndex), Integer.valueOf(cellIndex), 
+			ExcelHandlerUtil2.paging(pageTitle,examType,Integer.valueOf(workbookIndex), spilitSchoolCellIndex, 
 					Boolean.valueOf(pageLandscape), Integer.valueOf(pageSize),uploadFile, downloadFileFolderPath + targetFileName);
 			
 			Map<String,Object> map = new HashMap<String, Object>();

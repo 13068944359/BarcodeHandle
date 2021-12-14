@@ -2,9 +2,11 @@ package com.yichimai.excel.utils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFFooter;
@@ -56,7 +58,7 @@ public class ExcelHandlerUtil2 {
 	private static float HEIGHT_PT =  (float)14.25;//每一行的高度
 	private static int NEW_SHEET_LINE_INDEX = 0;
 	
-	public static void paging(String pageTitle,String examType,int sheetIndex,int schoolCodeCellIndex,boolean landscape,
+	public static void paging(String pageTitle,String examType,int sheetIndex,String spilitSchoolCellIndex,boolean landscape,
 			int pageSize,MultipartFile uploadFile,String targetFilePath) throws Exception {
 		
 	    String fileName = uploadFile.getOriginalFilename();// 获取文件名
@@ -94,7 +96,7 @@ public class ExcelHandlerUtil2 {
         newFooter.setLeft("禁止先勾后检查，禁止连续勾几行");
         newFooter.setRight("技术支持：xiaojz");
         
-        handle_split_by_school(examType, wb, sheetIndex, schoolCodeCellIndex, pageSize, newWorkbook, newSheet, newCellStyle);
+        handle_split_by_school(examType, wb, sheetIndex, spilitSchoolCellIndex, pageSize, newWorkbook, newSheet, newCellStyle);
         
         FileOutputStream fileOut = new FileOutputStream(targetFilePath);
         newWorkbook.write(fileOut);
@@ -102,63 +104,62 @@ public class ExcelHandlerUtil2 {
         fileOut.close();
 	}
 	
-		
-	private static void handle_split_by_school(String examType,Workbook wb,int sheetIndex,int schoolCodeCellIndex,int pageSize,
+	private static void handle_split_by_school(String examType,Workbook wb,int sheetIndex,String spilitSchoolCellIndex,int pageSize,
 			SXSSFWorkbook newWorkbook,SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
 		int newSheetLineIndex = 0;
     	Sheet sheet = wb.getSheetAt(sheetIndex);//获取sheet对象 
-    	String currentSchoolCode = sheet.getRow(1).getCell(schoolCodeCellIndex).getStringCellValue();//考点代码（用来判断是否变化）
-		
+//    	String currentSchoolCode = sheet.getRow(1).getCell(schoolCodeCellIndex).getStringCellValue();//考点代码（用来判断是否变化）
+    	String splitCodeCache = getSplitCode(sheet.getRow(1), spilitSchoolCellIndex);//优化逻辑，不局限于“学校代码”
+    	
     	List<Row> schoolListCache = new LinkedList<Row>();// 缓存一个学校的数据
     	 // 返回该页的总行数
     	int lastRowNum=sheet.getLastRowNum();
     	for (int lineIndex = 1; lineIndex <= lastRowNum; lineIndex++) {  //ineIndex <= lastRowNum 是因为下标从1开始而不是0，不补1，会缺少最后一行
     		Row currentRow=sheet.getRow(lineIndex);
         	
-        	String schoolCode = currentRow.getCell(schoolCodeCellIndex).getStringCellValue();
+//        	String schoolCode = currentRow.getCell(schoolCodeCellIndex).getStringCellValue();
+    		String currentSplitCode = getSplitCode(currentRow, spilitSchoolCellIndex);//优化逻辑，不局限于“学校代码”
         	/**
         	 * 循环读取，把一个考点的记录读取到一个list中
         	 * 读取到下一个考点，则说明已经读取完毕
         	 * 再处理下一个考点之前，先对已有记录的list进行处理，并清空
         	 */
-        	if(currentSchoolCode.equals(schoolCode)) {
+        	if(currentSplitCode.equals(splitCodeCache)) {
         		schoolListCache.add(currentRow);// add item to listCache
         	}else {
-        		handle_school_data(examType, sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
+        		handle_school_data(examType, sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
         		
-        		currentSchoolCode = schoolCode;
+        		splitCodeCache = currentSplitCode;
         		schoolListCache.clear();// 清空缓存
         		schoolListCache.add(currentRow);// add item to listCache
         	}
         }
-    	handle_school_data(examType, sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
+    	handle_school_data(examType, sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
 	}
 	
 	
-	private static void handle_school_data(String examType,int sheetIndex,int schoolCodeCellIndex,
+	private static void handle_school_data(String examType,int sheetIndex,String spilitSchoolCellIndex,
 			 List<Row> schoolListCache,int pageSize,
 			SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
 		
 		switch (examType) {
 		case "jszg":
-			handle_school_jszgz(  sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
+			handle_school_jszgz(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
 			break;
 			
 		case "sk":
-			handle_school_sk(  sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
+			handle_school_sk(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
 			break;
 
 		case "sy":
-			handle_school_sy(  sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
+			handle_school_sy(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
 			break;
 		default:
             throw new Exception("examType error");
 		}
 	}
 	
-	private static void handle_school_sk(int sheetIndex,int schoolCodeCellIndex,
-		 List<Row> schoolListCache,int pageSize,
-		SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
+	private static void handle_school_sk(int sheetIndex,String spilitSchoolCellIndex, List<Row> schoolListCache,int pageSize, SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
 		int columnInColumnSize = 5; //在新版式里面的一个大列里面有多少小列
 		int columnSize = 3; //在新版式里面有 多少个大列
 		int subjectCodeIndex = 6;
@@ -168,13 +169,11 @@ public class ExcelHandlerUtil2 {
 		int firstNameIndex = 9;
 		int lastNameIndex = 10;
 		
-		handle_school_common(sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet, newCellStyle, columnInColumnSize, columnSize, subjectCodeIndex, subjectNameIndex, showSubjectName, classIndex, firstNameIndex, lastNameIndex, "科目");
+		handle_school_common(sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet, newCellStyle, columnInColumnSize, columnSize, subjectCodeIndex, subjectNameIndex, showSubjectName, classIndex, firstNameIndex, lastNameIndex, "科目");
 	}
 	
 	//硕士研究生考试
-	private static void handle_school_sy(int sheetIndex,int schoolCodeCellIndex,
-			 List<Row> schoolListCache,int pageSize,
-			SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
+	private static void handle_school_sy(int sheetIndex,String spilitSchoolCellIndex, List<Row> schoolListCache,int pageSize, SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
 			int columnInColumnSize = 5; //在新版式里面的一个大列里面有多少小列
 			int columnSize = 3; //在新版式里面有 多少个大列
 			int subjectCodeIndex = 4;
@@ -184,13 +183,11 @@ public class ExcelHandlerUtil2 {
 			int firstNameIndex = 7;
 			int lastNameIndex = 8;
 			
-			handle_school_common(sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet, newCellStyle, columnInColumnSize, columnSize, subjectCodeIndex, subjectNameIndex, showSubjectName, classIndex, firstNameIndex, lastNameIndex, "单元");
+			handle_school_common(sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet, newCellStyle, columnInColumnSize, columnSize, subjectCodeIndex, subjectNameIndex, showSubjectName, classIndex, firstNameIndex, lastNameIndex, "单元");
 		}
 	
 	
-	private static void handle_school_jszgz(int sheetIndex,int schoolCodeCellIndex,
-			 List<Row> schoolListCache,int pageSize,
-				SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
+	private static void handle_school_jszgz(int sheetIndex,String spilitSchoolCellIndex, List<Row> schoolListCache,int pageSize, SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
 		int columnInColumnSize = 5; //在新版式里面的一个大列里面有多少小列
 		int columnSize = 3; //在新版式里面有 多少个大列
 		int subjectCodeIndex = 5;
@@ -200,7 +197,7 @@ public class ExcelHandlerUtil2 {
 		int firstNameIndex = 8;
 		int lastNameIndex = 9;
 		
-		handle_school_common(sheetIndex, schoolCodeCellIndex, schoolListCache, pageSize, newSheet, newCellStyle, columnInColumnSize, columnSize, subjectCodeIndex, subjectNameIndex, showSubjectName, classIndex, firstNameIndex, lastNameIndex, "科目");
+		handle_school_common(sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet, newCellStyle, columnInColumnSize, columnSize, subjectCodeIndex, subjectNameIndex, showSubjectName, classIndex, firstNameIndex, lastNameIndex, "科目");
 	}
 	
 	
@@ -210,7 +207,7 @@ public class ExcelHandlerUtil2 {
 	 * @param columnSize 在新版式里面有 多少个大列
 	 * 2021-12-10 有些不一定使用科目，所以使用subjectName自定义
 	 */
-	private static void handle_school_common(int sheetIndex,int schoolCodeCellIndex,
+	private static void handle_school_common(int sheetIndex,String spilitSchoolCellIndex,
 			 List<Row> schoolListCache,int pageSize,
 			SXSSFSheet newSheet,CellStyle newCellStyle,
 			int columnInColumnSize,int columnSize,
@@ -264,7 +261,7 @@ public class ExcelHandlerUtil2 {
 		int columnIndexOfPageList = 0;//记录已经写到第几列 0开始
 		boolean evenPage = false;//判断是否偶数页码？不是就需要补充一页空白
 
-		createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, columnInColumnSize,evenPage);
+		createNewPage(pageSize, spilitSchoolCellIndex, newSheet, pageList, schoolListCache, columnInColumnSize,evenPage);
 		for(String targetStr : targetStrList) {
 			if(targetStr.length() == 0) {
 				//空白行
@@ -284,18 +281,26 @@ public class ExcelHandlerUtil2 {
 					columnIndexOfPageList = 0;//重新开始的1页，从0列开始
 					//创建新开始的1页
 					evenPage = !evenPage;//标记是否偶数页
-					createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, columnInColumnSize,evenPage);
+					createNewPage(pageSize, spilitSchoolCellIndex, newSheet, pageList, schoolListCache, columnInColumnSize,evenPage);
 				}
 			}
 		}
 		if(!evenPage) {//不是偶数页
 			evenPage = !evenPage;//标记是否偶数页
-			createNewPage(pageSize, schoolCodeCellIndex, newSheet, pageList, schoolListCache, columnInColumnSize,evenPage);
+			createNewPage(pageSize, spilitSchoolCellIndex, newSheet, pageList, schoolListCache, columnInColumnSize,evenPage);
 		}
 	}
 	
-
-	private static void createNewPage(int pageSize,int schoolCodeCellIndex,SXSSFSheet newSheet,
+	private static String getSplitCode(Row r,String spilitSchoolCellIndex) {
+		String[] split = spilitSchoolCellIndex.split(",");//用英文逗号作分隔符
+		String result = "";
+		for(String s : split) {
+			result += r.getCell(Integer.valueOf(s)).getStringCellValue();
+		}
+		return result;
+	}
+	
+	private static void createNewPage(int pageSize,String spilitSchoolCellIndex,SXSSFSheet newSheet,
 			List<SXSSFRow> pageList, List<Row> schoolListCache, int columnSize, boolean evenPage) {
 		pageList.clear();
 		for(int count = 0;count < pageSize; count++) {  //先创建一整页空行
@@ -310,17 +315,12 @@ public class ExcelHandlerUtil2 {
 		}
 		
 		//创建完成新页之后，写院校代码
-		String schoolCode = schoolListCache.get(0).getCell(schoolCodeCellIndex).getStringCellValue().toString();
-		String schoolName = schoolListCache.get(0).getCell(schoolCodeCellIndex+1).getStringCellValue().toString();
-		
-		
+		String schoolCode = getSplitCode(schoolListCache.get(0), spilitSchoolCellIndex);
+		String[] split = spilitSchoolCellIndex.split(",");
+		String schoolName = schoolListCache.get(0).getCell(Integer.valueOf(split[split.length-1])+1).getStringCellValue().toString();
 		
 //		Row row = schoolListCache.get(0);
 //		String schoolCode = row.getCell(0).getStringCellValue().toString()+"-" + row.getCell(2).getStringCellValue().toString();
-		/**
-		 * 针对研究生考试，考点代码还要连接上地市代码
-		 * 2021-12-10
-		 */
 		
 		pageList.get(0).getCell(0).setCellValue("考点代码：" + schoolCode);
 		pageList.get(0).getCell(3).setCellValue("考点名称：" + schoolName);

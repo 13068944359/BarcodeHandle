@@ -145,7 +145,7 @@
 				$("#pageTitle").val("术科");
 				$("#workbookIndex").val("4");
 			}else if(currentType == "sy"){
-				$("#cellIndex").val("2");
+				$("#cellIndex").val("0,2");
 				$("#pageTitle").val("硕士研究生");
 				$("#workbookIndex").val("3");
 				
@@ -228,7 +228,7 @@
 		function submit(){
 			var formData = new FormData();
 			formData.append("workbookIndex",$.trim($("#workbookIndex").val()));
-			formData.append("cellIndex",$.trim($("#cellIndex").val()));
+			formData.append("spilitSchoolCellIndex",$.trim($("#cellIndex").val()));
 			formData.append("uploadFile",$("#uploadFile")[0].files[0]);
 			formData.append("pageLandscape",$(".pageLandscape.btn-primary").data("landscape"));
 			formData.append("pageSize",$.trim($("#pageSize").val()));
