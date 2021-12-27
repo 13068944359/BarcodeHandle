@@ -156,6 +156,11 @@ public class ExcelHandlerUtil2 {
 		case "sy":
 			handle_school_sy(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
 			break;
+
+		case "3p":
+			handle_school_3p(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
+			break;
+			
 		default:
             throw new Exception("examType error");
 		}
@@ -174,6 +179,21 @@ public class ExcelHandlerUtil2 {
 		handle_school_common(sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet, newCellStyle, columnInColumnSize, columnSize, subjectCodeIndex, subjectNameIndex, showSubjectName, classIndex, firstNameIndex, lastNameIndex, "科目");
 	}
 	
+	
+	private static void handle_school_3p(int sheetIndex,String spilitSchoolCellIndex, List<Row> schoolListCache,int pageSize, SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
+		int columnInColumnSize = 5; //在新版式里面的一个大列里面有多少小列
+		int columnSize = 3; //在新版式里面有 多少个大列
+		int subjectCodeIndex = 6;
+		int subjectNameIndex = 7;
+		boolean showSubjectName = true; //是否打印科目名称
+		int classIndex = 8;
+		int firstNameIndex = 9;
+		int lastNameIndex = 10;
+		
+		handle_school_common(sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet, newCellStyle, columnInColumnSize, columnSize, subjectCodeIndex, subjectNameIndex, showSubjectName, classIndex, firstNameIndex, lastNameIndex, "科目");
+	}
+	
+	
 	//硕士研究生考试
 	private static void handle_school_sy(int sheetIndex,String spilitSchoolCellIndex, List<Row> schoolListCache,int pageSize, SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
 			int columnInColumnSize = 5; //在新版式里面的一个大列里面有多少小列
@@ -188,7 +208,7 @@ public class ExcelHandlerUtil2 {
 			handle_school_common(sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet, newCellStyle, columnInColumnSize, columnSize, subjectCodeIndex, subjectNameIndex, showSubjectName, classIndex, firstNameIndex, lastNameIndex, "单元");
 		}
 	
-	
+	//教师资格证考试
 	private static void handle_school_jszgz(int sheetIndex,String spilitSchoolCellIndex, List<Row> schoolListCache,int pageSize, SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
 		int columnInColumnSize = 5; //在新版式里面的一个大列里面有多少小列
 		int columnSize = 3; //在新版式里面有 多少个大列

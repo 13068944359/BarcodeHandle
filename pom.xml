@@ -2,9 +2,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.yichimai.excel</groupId>
 	<artifactId>ExcelHandle</artifactId>
-	<version>3.0</version>
+	<version>4.1</version>
 	<packaging>jar</packaging>
-  
   
   
 	<parent>
@@ -51,12 +50,11 @@
 		    <scope>test</scope>
 		</dependency>
 		
-		
 		<dependency>
-    <groupId>cn.hutool</groupId>
-    <artifactId>hutool-all</artifactId>
-    <version>5.6.5</version>
-</dependency>
+		    <groupId>cn.hutool</groupId>
+		    <artifactId>hutool-all</artifactId>
+		    <version>5.6.5</version>
+		</dependency>
 
 		<!-- <dependency>
 			<groupId>xerces</groupId>
@@ -64,13 +62,11 @@
 			<version>2.11.0</version>
 		</dependency> -->
 		
-		
 		<dependency>
 		    <groupId>commons-collections</groupId>
 		    <artifactId>commons-collections</artifactId>
 		    <version>3.2.2</version>
 		</dependency>
-		
 		
 			<!-- https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter 
 		<dependency>
@@ -136,6 +132,12 @@
 		</dependency>
 		
 		
+		<dependency>
+		    <groupId>com.github.albfernandez</groupId>
+		    <artifactId>javadbf</artifactId>
+		    <version>1.11.2</version>
+		</dependency>
+		
 		
 		<dependency>
 		    <groupId>io.github.biezhi</groupId>
@@ -169,7 +171,7 @@
 		</plugins>
 		
 		<!-- 下面的注释块等打包可执行jar的时候在用 -->
-		<!--  
+		 
 		<resources>
 			<resource>
 				<directory>src/main/webapp</directory>
@@ -179,7 +181,7 @@
 				<directory>src/main/resources</directory>
 				<targetPath>BOOT-INF/classes</targetPath>
 			</resource>
-		</resources> -->
+		</resources>  <!---->
 	</build>
 
 
