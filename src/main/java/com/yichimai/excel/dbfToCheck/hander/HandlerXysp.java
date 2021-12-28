@@ -10,8 +10,10 @@ import com.yichimai.excel.dbfToCheck.DbfLineEntity;
 public class HandlerXysp extends Handler {
 
 	public HandlerXysp() {
-//		super();
-		super(null, null, 4, 5, null, null, null, 6, 7, 8, 11, 12, 7, "学业水平考试");
+		super();
+//		super(null, null, 4, 5, null, null, null, 6, 7, 8, 11, 12, 7, "学业水平考试");
+		setKdh(4).setKdmc(5).setKch(6).setKmdm(7).setKmmc(8).setZwh(11)
+			.setXm(12).setSplitCodeInSchool(7).setExamName("学业水平考试");
 	}
 	
 	String generateSplitLine(DbfLineEntity item) {

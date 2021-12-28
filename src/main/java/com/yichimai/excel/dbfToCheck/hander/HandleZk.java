@@ -17,7 +17,10 @@ import com.yichimai.excel.dbfToCheck.DbfLineEntity;
 public class HandleZk extends Handler {
 
 	public HandleZk() {
-		super(null, null, 0, 1, null, null, 2, 3, 4, null, 5, 6, 2, "自学考试");
+//		super(null, null, 0, 1, null, null, 2, 3, 4, null, 5, 6, 2, "自学考试");
+		super();
+		setKdh(0).setKdmc(1).setDy(2).setKch(3).setKmdm(4)
+			.setZwh(5).setXm(6).setSplitCodeInSchool(2).setExamName("自学考试");
 	}
 	
 	String generateSplitLine(DbfLineEntity item) {

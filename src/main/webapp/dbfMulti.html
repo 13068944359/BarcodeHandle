@@ -3,106 +3,195 @@
 <head>
 	<meta charset="UTF-8">
 	<title>dbf</title>
-	<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="lib/bootstrap-4.6.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="lib/customFormBasedOnBootstrap4/input-material.css">
+<link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css">
+<style type="text/css">
+#uploadDiv {
+	width: 60%;
+	height: 400px;
+	/* background-color: rgba(250,250,250,0.7); */
+	border-radius: 20px;
+	border: 5px dashed #fff;
+	margin: 0px auto;
+	margin-bottom: 10px;
+	padding-top: 100px;
+	font-size: 20px;
+}
+
+#uploadDiv>p {
+	text-align: center;
+}
+
+#uploadDiv:hover {
+	cursor: pointer;
+	color: #007bff;
+	border: 5px dashed #007bff;
+}
+
+.form-group.input-material .form-control:focus, .form-group.input-material .form-control[value]:not([value=""]){
+	border-bottom-color: #ffffff;
+	color: #007bff;
+	font-size: 30px;
+}
+.form-group.input-material .form-control:focus ~ label, .form-group.input-material .form-control[value]:not([value=""]) ~ label{
+	color: #FFFFFF;
+}
+
+#logDisplay p{
+	margin-bottom: 0px;
+    padding-bottom: 0px;
+    line-height: 12px;
+    padding: 3px 10px;
+    color: rgba(255,255,255,0.4);
+}
+#logDisplay p>span{
+	color: #007bff;
+}
+
+#logDisplay::-webkit-scrollbar { width: 0 !important }
+</style>
 </head>
 <body>
-	<div class="container">
-		<h2 style="text-align:center;margin-bottom:50px;">dbf导入数据库工具</h2>
-	
-		<form class="form-horizontal" name="excelForm" id="excelForm">
-		  <div class="form-group">
-		    <label class="col-sm-2 control-label">数据库表名：</label>
-		    <div class="col-sm-10">
-		      <input type="text" class="form-control" id="newTableName" name="newTableName" placeholder="请按照数据库表名规则要求填写">
-		    </div>
-		  </div>
-		  <div class="form-group customPara">
-		    <label for="cellIndex" class="col-sm-2 control-label">创建新表：</label>
-		    <div class="col-sm-10">
-		      <select class="form-control" id="isCreateTable" name="isCreateTable">
-				  <option value="true">是</option>
-				  <option value="false">否</option>
+	<ul id="transBackground">
+		<li><span></span></li>
+		<li><span></span></li>
+		<li><span></span></li>
+	</ul>
+	<div class="container" style="color: #fff; background-color: rgba(0, 0, 0, 0.5);">
+		<h2	style="text-align: center; margin-bottom: 10px; padding-top: 70px; color: #fff;">excel分页工具4.1</h2>
 
-				</select>
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label for="uploadFile" class="col-sm-2 control-label">dbf文件：</label>
-		    <div class="col-sm-10">
-		      <input type="file" multiple="multiple" class="form-control" id="uploadFile" name="uploadFile" accept=".dbf,.DBF">
-		    </div>
-		  </div>
-		  <div class="form-group">
-		    <label class="col-sm-2 control-label">数据库类型：</label>
-		    <div class="col-sm-10">
-		      <div class="btn-group btn-group-justified" role="group" aria-label="...">
-				  <div class="btn-group" role="group">
-				    <button type="button" class="btn btn-primary pageLandscape" data-landscape="mysql">mysql</button>
-				  </div>
-				  
-				  <div class="btn-group" role="group">
-				    <button type="button" class="btn btn-default pageLandscape" disabled data-landscape="oracle">oracle（暂不支持)</button>
-				  </div>
+		<form class="form-horizontal" name="excelForm" id="excelForm">
+			
+			<div class="row">
+				<div class="col-md-3" ></div>
+				<div class="col-md-6" >
+					<div class="form-group input-material">
+					      <input type="text" class="form-control" id="newTableName">
+					      <label for="name-field">数据库表名：</label>
+					</div>
 				</div>
-		    </div>
-		  </div>
+				<div class="col-md-3" ></div>
+			</div>
 			
-		<div class="form-group customPara">
-		    <label for="mysqlUrl" class="col-sm-2 control-label">数据库url：</label>
-		    <div class="col-sm-10">
-		      <input type="text" class="form-control" id="mysqlUrl" name="mysqlUrl" value="jdbc:mysql://localhost:3306/dbf?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC">
-		    </div>
-		  </div>
-		  <div class="form-group customPara">
-		    <label for="mysqlUser" class="col-sm-2 control-label">数据库账户：</label>
-		    <div class="col-sm-10">
-		      <input type="text" class="form-control" id="mysqlUser" name="mysqlUser" value="root">
-		    </div>
-		  </div>
-		  <div class="form-group customPara">
-		    <label for="mysqlPass" class="col-sm-2 control-label">数据库密码：</label>
-		    <div class="col-sm-10">
-		      <input type="text" class="form-control" id="mysqlPass" name="mysqlPass" value="root">
-		    </div>
-		  </div>
-		  <div class="form-group customPara">
-		    <label for="charset" class="col-sm-2 control-label">dbf文件解析字符集：</label>
-		    <div class="col-sm-10">
-		      <input type="text" class="form-control" id="charset" name="charset" value="GBK">
-		    </div>
-		  </div>
+			<div id="uploadDiv" style="position: relative">
+				<div id="logDisplay" style="position: absolute;left: 0px;top: 0px;font-size: 12px;width: 100%;height: 100%;overflow: auto;">
+					<!-- <p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p> -->
+				</div>
+				<p id="uploadIcon" style="font-size: 80px;"><i class="fa fa-cloud-upload"></i></p>
+				<p>点击上传</p>
+				<p>或直接将excel文件拖入此区域</p>
+			</div>
+
+			<div style="width: 70%; height: 20px; margin: 0px auto; margin-bottom: 10px;">
+				<a href="javascript:void(0);" id="customBtn"style="color: #fff; float: right; padding-right: 20px;">高级选项</a>
+			</div>
 			
+			<div class="row">
+				<div class="col-md-3 customPara" >
+					<div class="form-group input-material">
+						<select class="form-control" id="isCreateTable" style="border-bottom: 2px solid #ffffff;font-size:30px;color: #007bff;">
+							<option value="true">是</option>
+							<option value="false">否</option>
+					  	</select>
+				    	<input type="hidden" class="form-control" id="isCreateTableInput" value="true" required>
+				    	<label for="name-field">创建新表：</label>
+					</div>
+				</div>
+				
+				<div class="col-md-3 customPara" >
+					<div class="form-group input-material">
+					      <input type="text" class="form-control" id="mysqlUser" value="root">
+					      <label for="name-field">数据库账户：</label>
+					</div>
+				</div>
+				<div class="col-md-3 customPara" >
+					<div class="form-group input-material">
+					      <input type="text" class="form-control" id="mysqlPass" value="root">
+					      <label for="name-field">数据库密码：</label>
+					</div>
+				</div>
+				<div class="col-md-3 customPara" >
+					<div class="form-group input-material">
+					      <input type="text" class="form-control" id="charset" value="GBK">
+					      <label for="name-field">dbf文件解析字符集：</label>
+					</div>
+				</div>
+				
+				<div class="col-md-12 customPara" >
+					<div class="form-group input-material">
+					      <input type="text" class="form-control" id="mysqlUrl" value="jdbc:mysql://localhost:3306/dbf?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC">
+					      <label for="name-field">数据库url：</label>
+					</div>
+				</div>
+				
+			</div>
+			
+
 		</form>
-		
-		<div style="text-align:center;margin-top:50px;">
-			<button type="button" class="btn btn-primary btn-lg" id="submitBtn">提 交 处 理</button>&nbsp;&nbsp;
-			<button type="button" class="btn btn-default btn-lg" id="customBtn">高 级 选 项</button>
-		</div>
-		
-		<footer>
-		    <hr>
-		
-		    <!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
-		    <p class="pull-right">服务中心-网络信息部</p>
-		    <p>© 2021 xiaojz</p>
+
+
+		<footer style="color: #fff;">
+			<hr style="border-top: 2px solid #fff;">
+			<!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
+			<p class="pull-right">服务中心-网络信息部</p>
+			<p>© 2021 xiaojz</p>
 		</footer>
 	</div>
-
-
+	
 	<script src="js/jquery.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
+    <script src="lib/bootstrap-4.6.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/customFormBasedOnBootstrap4/materialize-inputs.jquery.js"></script>
 	<script src="js/layer/layer.js"></script>
+	<script src="js/xiaojzUpload.js"></script>
+	<script src="js/xiaojzAnimation.js"></script>
 	<script type="text/javascript">
+	//禁止浏览器打开文件行为	
+	document.addEventListener("drop",function(e){e.preventDefault();});
+	document.addEventListener("dragleave",function(e){e.preventDefault();});
+	document.addEventListener("dragenter",function(e){e.preventDefault();});
+	document.addEventListener("dragover",function(e){e.preventDefault();});
 	
 		var applicationPath = "/BarcodeHandle";
 	
 		$(function(){
 			$(".customPara").hide();
+			$('body').materializeInputs();
+			console.info("萧家洲联系电话：13660004900");
 		});
+		
+		var uploadElementId = initUploadElement("#uploadDiv");//自定义的上传组件By xiaojz
+		$("#" + uploadElementId).change(function(){
+			if($("#" + uploadElementId)[0].value == "" ){
+				return;
+			}
+		   validFileAndSubmit($("#" + uploadElementId)[0].files[0]);
+		   $("#" + uploadElementId).val("");//清空上传框
+		});
+		
+		
+		
+		
 		
 		$("#customBtn").click(function(){
 			$(".customPara").show();
 			$(this).hide();
+			
+			var widthStr = $("#uploadDiv").css("width");
+			var widthVal = Number(widthStr.match(/\d+/)[0]);//元素原值
+			widthVal *= 1.2;
+			
+			xiaojzAni.startElasticAni("#uploadDiv","height",200,10);
+			xiaojzAni.startElasticAni("#uploadDiv","width",widthVal,10);
+			xiaojzAni.startSlowAni("#uploadDiv","font-size",15,10);
+			xiaojzAni.startSlowAni("#uploadIcon","font-size",40,10);
+			xiaojzAni.startSlowAni("#uploadDiv","padding-top",20,10);
 		});
 		
 	
@@ -117,12 +206,6 @@
 	 			layer.msg('请先填写“数据库表名”');
 	 			return false;
 			}
-			
-			if($("#uploadFile").val() == ""){
-	 			layer.msg('请先上传dbf文件');
-	 			return false;
-			}
-
 
 			if($("#mysqlUrl").val() == ""){
 	 			layer.msg('请先填写“数据库url”');
@@ -143,21 +226,19 @@
 			return true;
 		}
 		
-		function submit(){
+		function submit(fileList){
 			var formData = new FormData();
 			formData.append("newTableName",$.trim($("#newTableName").val()));
 			formData.append("isCreateTable",$.trim($("#isCreateTable").val()));
-			formData.append("databaseType",$(".pageLandscape.btn-primary").data("landscape"));
+			formData.append("databaseType","mysql");
 			formData.append("mysqlUrl",$.trim($("#mysqlUrl").val()));
 			formData.append("mysqlUser",$.trim($("#mysqlUser").val()));
 			formData.append("mysqlPass",$.trim($("#mysqlPass").val()));
 			formData.append("charset",$.trim($("#charset").val()));
 			
-			var files = $("#uploadFile")[0].files;
-	        for (var i = 0; i < files.length; i++) {
-	            formData.append("uploadFile",files[i]);//multi file upload is special
+	        for (var i = 0; i < fileList.length; i++) {
+	            formData.append("uploadFile",fileList[i]);//multi file upload is special
 	        }
-			
 			
 			loadingLayer = layer.msg('正在加载...', {icon: 16, time:0, shade: [0.1,'#fff']});
 			$.ajax({  
@@ -184,26 +265,37 @@
 		    });
 		}
 		
-		
-		
-		$("#uploadFile").change(function(){
-			if($("#uploadFile")[0].value == "" ){
-				return;//no file selected
+		function validFileAndSubmit(fileList){
+			if(validFileType(fileList) && validForm()){
+				//validate form
+				submit(fileList);
 			}
-			// if file is not dbf , delete it and notice user
-		   
-			var files = $("#uploadFile")[0].files;
-			for (var i = 0; i < files.length; i++) {
-				var fileName=files[i].name;  
+		}
+		
+		
+		
+		$("#uploadDiv")[0].addEventListener("drop",function(e){
+			var fileList = e.dataTransfer.files;
+			if(fileList.length = 0){
+				return false;
+			}
+			validFileAndSubmit(fileList);
+		});
+		
+		
+		function validFileType(fileList){
+			for (var i = 0; i < fileList.length; i++) {
+				var fileName=fileList[i].name;  
 				var suffixIndex=fileName.lastIndexOf(".");  
 				var suffix=fileName.substring(suffixIndex+1).toUpperCase();  
-				if(suffix!="DBF" ){  
+				if( suffix!="DBF" ){  
 					layer.msg('请上传dbf文件');
 					$("#uploadFile")[0].value = "";
-					return;
+					return false;
 				}
 			}
-		});
+			return true;
+		}
 		
 		
 	

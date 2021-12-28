@@ -39,23 +39,26 @@ public abstract class Handler {
 	GenerateExcelUtil excelUtil;
 	List<String> logList;
 	
-	public Handler(Integer dsh, Integer xqh, Integer kdh, Integer kdmc, Integer dzh, Integer dzmc, Integer dy,
-			Integer kch, Integer kmdm, Integer kmmc, Integer zwh, Integer xm, Integer splitCodeInSchool, String examName) {
-		this.dsh = dsh;
-		this.xqh = xqh;
-		this.kdh = kdh;
-		this.kdmc = kdmc;
-		this.dzh = dzh;
-		this.dzmc = dzmc;
-		this.dy = dy;
-		this.kch = kch;
-		this.kmdm = kmdm;
-		this.kmmc = kmmc;
-		this.zwh = zwh;
-		this.xm = xm;
-		this.examName = examName;
-		this.splitCodeInSchool = splitCodeInSchool;
-	}
+	
+	public Handler() {}
+	
+//	public Handler(Integer dsh, Integer xqh, Integer kdh, Integer kdmc, Integer dzh, Integer dzmc, Integer dy,
+//			Integer kch, Integer kmdm, Integer kmmc, Integer zwh, Integer xm, Integer splitCodeInSchool, String examName) {
+//		this.dsh = dsh;
+//		this.xqh = xqh;
+//		this.kdh = kdh;
+//		this.kdmc = kdmc;
+//		this.dzh = dzh;
+//		this.dzmc = dzmc;
+//		this.dy = dy;
+//		this.kch = kch;
+//		this.kmdm = kmdm;
+//		this.kmmc = kmmc;
+//		this.zwh = zwh;
+//		this.xm = xm;
+//		this.examName = examName;
+//		this.splitCodeInSchool = splitCodeInSchool;
+//	}
 	
 	
 	public void handle(DBFReader reader,int pageSize,String targetFilePath,String encodeType, List<String> logList) throws Exception {
@@ -92,10 +95,10 @@ public abstract class Handler {
 			String xm = excelUtil.getValue(rowValues[this.xm]);
 			String dy = this.dy==null? null: excelUtil.getValue(rowValues[this.dy]);
 			String splitCodeInSchool = this.splitCodeInSchool==null? null: excelUtil.getValue(rowValues[this.splitCodeInSchool]);
-			String dsh = null;
-			String xqh = null;
-			String dzh = null;
-			String dzmc = null;
+			String dsh = this.dsh==null? null: excelUtil.getValue(rowValues[this.dsh]);
+			String xqh = this.xqh==null? null: excelUtil.getValue(rowValues[this.xqh]);
+			String dzh = this.dzh==null? null: excelUtil.getValue(rowValues[this.dzh]);
+			String dzmc = this.dzmc==null? null: excelUtil.getValue(rowValues[this.dzmc]);
 			if(schoolCodeCache == null) { schoolCodeCache = currentSchoolCode; }// first line
 			
 			if(!schoolCodeCache.equals(currentSchoolCode)) {
@@ -191,6 +194,94 @@ public abstract class Handler {
 		sb.append(classList.get(classList.size()-1).getXm());//姓名
 		sb.append("- ");// add an extra space, make last cell have border
 		return sb.toString();
+	}
+
+
+	public static void setLOGGER(Logger lOGGER) {
+		LOGGER = lOGGER;
+	}
+
+
+	public Handler setDsh(Integer dsh) {
+		this.dsh = dsh;
+		return this;
+	}
+
+
+	public Handler setXqh(Integer xqh) {
+		this.xqh = xqh;
+		return this;
+	}
+
+
+	public Handler setKdh(Integer kdh) {
+		this.kdh = kdh;
+		return this;
+	}
+
+
+	public Handler setKdmc(Integer kdmc) {
+		this.kdmc = kdmc;
+		return this;
+	}
+
+
+	public Handler setDzh(Integer dzh) {
+		this.dzh = dzh;
+		return this;
+	}
+
+
+	public Handler setDzmc(Integer dzmc) {
+		this.dzmc = dzmc;
+		return this;
+	}
+
+
+	public Handler setDy(Integer dy) {
+		this.dy = dy;
+		return this;
+	}
+
+
+	public Handler setKch(Integer kch) {
+		this.kch = kch;
+		return this;
+	}
+
+
+	public Handler setKmdm(Integer kmdm) {
+		this.kmdm = kmdm;
+		return this;
+	}
+
+
+	public Handler setKmmc(Integer kmmc) {
+		this.kmmc = kmmc;
+		return this;
+	}
+
+
+	public Handler setZwh(Integer zwh) {
+		this.zwh = zwh;
+		return this;
+	}
+
+	public Handler setXm(Integer xm) {
+		this.xm = xm;
+		return this;
+	}
+
+
+	public Handler setSplitCodeInSchool(Integer splitCodeInSchool) {
+		this.splitCodeInSchool = splitCodeInSchool;
+		return this;
+	}
+
+
+	public Handler setExamName(String examName) {
+		this.examName = examName;
+		return this;
 	}
 	
 	

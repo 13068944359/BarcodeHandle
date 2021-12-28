@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <title>excel</title>
 <link rel="stylesheet" href="lib/bootstrap-4.6.1/css/bootstrap.min.css">
-<link rel="stylesheet"
-	href="lib/customFormBasedOnBootstrap4/input-material.css">
+<link rel="stylesheet" href="lib/customFormBasedOnBootstrap4/input-material.css">
 <link rel="stylesheet" href="css/animation.css">
 <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css">
 <style type="text/css">
@@ -265,7 +264,6 @@
 		function validFileAndSubmit(excelFile){
 			
 			var fileName = excelFile.name;//获取文件名称
-			console.info(fileName);
 			if(validFileType(fileName) && validForm()){
 				//validate form
 				submit(excelFile);
