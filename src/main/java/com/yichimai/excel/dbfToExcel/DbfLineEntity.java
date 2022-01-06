@@ -1,4 +1,4 @@
-package com.yichimai.excel.dbfToCheck;
+package com.yichimai.excel.dbfToExcel;
 
 public class DbfLineEntity {
 	private String dsh; //地市号

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>dbf字段填充</title>
+<link rel="stylesheet" href="lib/bootstrap-4.6.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="lib/customFormBasedOnBootstrap4/input-material.css">
+<link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css">
+<style type="text/css">
+#uploadDiv {
+	width: 60%;
+	height: 400px;
+	/* background-color: rgba(250,250,250,0.7); */
+	border-radius: 20px;
+	border: 5px dashed #fff;
+	margin: 0px auto;
+	margin-bottom: 10px;
+	padding-top: 100px;
+	font-size: 20px;
+}
+
+#uploadDiv>p {
+	text-align: center;
+}
+
+#uploadDiv:hover {
+	cursor: pointer;
+	color: #007bff;
+	border: 5px dashed #007bff;
+}
+
+.form-group.input-material .form-control:focus, .form-group.input-material .form-control[value]:not([value=""]){
+	border-bottom-color: #ffffff;
+	color: #007bff;
+	font-size: 30px;
+}
+.form-group.input-material .form-control:focus ~ label, .form-group.input-material .form-control[value]:not([value=""]) ~ label{
+	color: #FFFFFF;
+}
+
+#logDisplay p{
+	margin-bottom: 0px;
+    padding-bottom: 0px;
+    line-height: 12px;
+    padding: 3px 10px;
+    color: rgba(255,255,255,0.4);
+}
+#logDisplay p>span{
+	color: #007bff;
+}
+
+#logDisplay::-webkit-scrollbar { width: 0 !important }
+</style>
+</head>
+<body>
+	<ul id="transBackground">
+		<li><span></span></li>
+		<li><span></span></li>
+		<li><span></span></li>
+	</ul>
+	<div class="container" style="color: #fff; background-color: rgba(0, 0, 0, 0.5);">
+		<h2	style="text-align: center; margin-bottom: 10px; padding-top: 70px; color: #fff;">dbf字段填充工具1.0</h2>
+
+		<form class="form-horizontal" name="excelForm" id="excelForm">
+			
+			<div class="row">
+				<div class="col-md-3" ></div>
+				<div class="col-md-6" >
+					<div class="form-group input-material">
+					      <input type="text" class="form-control" id="charset" value="GBK">
+					      <label for="name-field">dbf文件解析字符集：</label>
+					</div>
+				</div>
+				<div class="col-md-3" ></div>
+			</div>
+			
+			<div id="uploadDiv" style="position: relative">
+				<div id="logDisplay" style="position: absolute;left: 0px;top: 0px;font-size: 12px;width: 100%;height: 100%;overflow: auto;">
+					<!-- <p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p>
+				<p>日志日志</p> -->
+				</div>
+				<p id="uploadIcon" style="font-size: 80px;"><i class="fa fa-cloud-upload"></i></p>
+				<p>点击上传</p>
+				<p>或直接将dbf文件拖入此区域</p>
+			</div>
+
+		</form>
+
+
+		<footer style="color: #fff;">
+			<hr style="border-top: 2px solid #fff;">
+			<!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
+			<p class="pull-right">服务中心-网络信息部</p>
+			<p>© 2021 xiaojz</p>
+		</footer>
+	</div>
+	
+	<script src="js/jquery.min.js"></script>
+    <script src="lib/bootstrap-4.6.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/customFormBasedOnBootstrap4/materialize-inputs.jquery.js"></script>
+	<script src="js/layer/layer.js"></script>
+	<script src="js/xiaojzUpload.js"></script>
+	<script src="js/xiaojzAnimation.js"></script>
+	<script type="text/javascript">
+	//禁止浏览器打开文件行为	
+	document.addEventListener("drop",function(e){e.preventDefault();});
+	document.addEventListener("dragleave",function(e){e.preventDefault();});
+	document.addEventListener("dragenter",function(e){e.preventDefault();});
+	document.addEventListener("dragover",function(e){e.preventDefault();});
+	
+		var applicationPath = "/BarcodeHandle";
+	
+		$(function(){
+			$(".customPara").hide();
+			$('body').materializeInputs();
+			console.info("萧家洲联系电话：13660004900");
+		});
+		
+		var uploadElementId = initUploadElement("#uploadDiv");//自定义的上传组件By xiaojz
+		$("#" + uploadElementId).change(function(){
+			if($("#" + uploadElementId)[0].value == "" ){
+				return;
+			}
+		   validFileAndSubmit($("#" + uploadElementId)[0].files[0]);
+		   $("#" + uploadElementId).val("");//清空上传框
+		});
+		
+		
+		$("#customBtn").click(function(){
+			$(".customPara").show();
+			$(this).hide();
+			
+			var widthStr = $("#uploadDiv").css("width");
+			var widthVal = Number(widthStr.match(/\d+/)[0]);//元素原值
+			widthVal *= 1.2;
+			
+			xiaojzAni.startElasticAni("#uploadDiv","height",200,10);
+			xiaojzAni.startElasticAni("#uploadDiv","width",widthVal,10);
+			xiaojzAni.startSlowAni("#uploadDiv","font-size",15,10);
+			xiaojzAni.startSlowAni("#uploadIcon","font-size",40,10);
+			xiaojzAni.startSlowAni("#uploadDiv","padding-top",20,10);
+		});
+		
+		$("#submitBtn").click(function(){
+			if(validForm()){
+				submit();
+			}
+		});
+		
+		function validForm(){
+			if($("#charset").val() == ""){
+	 			layer.msg('请先填写“dbf文件解析字符集”');
+	 			return false;
+			}
+			return true;
+		}
+		
+		function submit(dbfFile){
+			var formData = new FormData();
+			formData.append("uploadFile",dbfFile);
+			formData.append("charset",$.trim($("#charset").val()));
+			
+			loadingLayer = layer.msg('正在加载...', {icon: 16, time:0, shade: [0.1,'#fff']});
+			$.ajax({  
+		         url: applicationPath + "/dbfHandle/fillField",  
+		         type: 'POST',  
+		         data: formData,  async: true,   cache: false,   contentType: false,  dataType: 'json',
+		         processData: false,  
+		         success: function (data) {
+		 			layer.close(loadingLayer);
+		 			if(data.rtResponse != null && data.rtResponse.rt_code == 200){
+		 				layer.msg('处理完成');
+
+		 				var fileName = data.rtResponse.rtResult.name;
+		 				location.href = applicationPath + "/excel/downloadExcel?fileName=" + fileName;
+		 			}else if(data.rtResponse != null && data.rtResponse.rt_code == 500){
+						layer.msg("出错："+data.rtResponse.rt_desc);
+					}else if(data.rtResponse != null && data.rtResponse.rt_code == 403){
+						layer.msg("会话超时，请刷新页面后重试");
+					}else{
+						layer.msg("请求失败，请联系管理员");
+					}
+		         },  
+		         error: function (data) {  
+		        	 layer.msg("文件导入失败");  
+		             console.info(data);
+		         }  
+		    });
+		}
+		
+		function validFileAndSubmit(dbfFile){
+			if(validFileType(dbfFile) && validForm()){
+				//validate form
+				submit(dbfFile);
+			}
+		}
+		
+		
+		$("#uploadDiv")[0].addEventListener("drop",function(e){
+			if(e.dataTransfer.files.length = 0){
+				return false;
+			}
+			var dbfFile = e.dataTransfer.files[0];
+			validFileAndSubmit(dbfFile);
+		});
+		
+		function validFileType(dbfFile){
+			var fileName = dbfFile.name;
+			var suffixIndex=fileName.lastIndexOf(".");  
+		   var suffix=fileName.substring(suffixIndex+1).toUpperCase();  
+		   if(suffix!="dbf" && suffix!="DBF"){  
+				layer.msg('请上传excel表格文件');
+				return false;
+		   }else{
+			   return true;
+		   }
+		}
+		
+		
+	
+	</script>
+</body>
+</html>

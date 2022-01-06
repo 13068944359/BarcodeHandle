@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.linuxense.javadbf.DBFReader;
-import com.yichimai.excel.dbfToCheck.DbfLineEntity;
-import com.yichimai.excel.dbfToCheck.GenerateExcelUtil;
+import com.yichimai.excel.dbfToExcel.DbfLineEntity;
+import com.yichimai.excel.dbfToExcel.GenerateExcelUtil;
 
 /**
  * 20211227 4.0版本

@@ -1,11 +1,12 @@
 package com.yichimai.excel.dbfToCheck.hander;
 
-import com.yichimai.excel.dbfToCheck.DbfLineEntity;
+import com.yichimai.excel.dbfToExcel.DbfLineEntity;
 
 /**
  * 学业水平考试
  * 2021-12-27 把逻辑抽取出抽象类，后续的业务根据需要各自复写对应的抽象类方法
- * select ds_h,dsmc,xq_h,xqmc,kd_h,kdmc,kc_h,kmdm,kmmc,txsj,ksh,zwxh,xm,dtks from XX
+ * select ds_h,dsmc,xq_h,xqmc,kd_h,kdmc,kc_h,kmdm,kmmc,txsj,ksh,zwxh,xm,dtks from XX order by ds_h,xq_h,kd_h,kmdm,kc_h,zwxh
+ * 
  */
 public class HandlerXysp extends Handler {
 

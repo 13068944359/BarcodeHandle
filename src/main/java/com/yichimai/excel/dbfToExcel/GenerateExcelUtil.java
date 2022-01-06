@@ -1,4 +1,4 @@
-package com.yichimai.excel.dbfToCheck;
+package com.yichimai.excel.dbfToExcel;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -138,7 +138,6 @@ public class GenerateExcelUtil {
         newFooter.setCenter(HSSFFooter.page()+" / "+HSSFFooter.numPages());
         newFooter.setLeft("禁止先勾后检查，禁止连续勾几行");
         newFooter.setRight("技术支持：xiaojz");
-        
         
         //设置好列宽
 		sheet.setDefaultColumnWidth(7 * 256);// 设置7个字符的宽度（7个数字）

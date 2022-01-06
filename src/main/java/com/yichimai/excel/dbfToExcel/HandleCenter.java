@@ -1,4 +1,4 @@
-package com.yichimai.excel.dbfToCheck;
+package com.yichimai.excel.dbfToExcel;
 
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -20,7 +20,7 @@ public class HandleCenter {
 		
 	    if(".dbf".equals(suffixName) || ".DBF".equals(suffixName)){
 			InputStream fis = uploadFile.getInputStream();
-			DBFReader reader = new DBFReader(fis);
+			DBFReader reader = new DBFReader(fis);  //此处本可以指定读取编码，详情参照com/yichimai/excel/utils/DbfToDatabaseUtil.java
 			return reader;
         }else{
             throw new Exception("file type error");
@@ -31,19 +31,19 @@ public class HandleCenter {
 		DBFReader reader = checkFileType(uploadFile);
 		List<String> logList = new LinkedList<String>();//用来传输日志信息给前台
 		switch(examType) {
-		case "xysp": 
+		case "xysp":
 			HandlerXysp xysp = new HandlerXysp();
 			xysp.handle(reader, pageSize, targetFilePath, encodeType, logList);
 			break;
-		case "zk": 
+		case "zk":
 			HandleZk zk = new HandleZk();
 			zk.handle(reader, pageSize, targetFilePath, encodeType, logList);
 			break;
-		case "zz": 
+		case "zz":
 			HandleZz zz = new HandleZz();
 			zz.handle(reader, pageSize, targetFilePath, encodeType, logList);
 			break;
-		default: 
+		default:
             throw new Exception("exam type error = " + examType);
 		}
 		

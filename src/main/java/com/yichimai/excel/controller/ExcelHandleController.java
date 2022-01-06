@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.yichimai.excel.dbfToCheck.HandleCenter;
+import com.yichimai.excel.dbfToExcel.HandleCenter;
 import com.yichimai.excel.utils.ExcelHandlerUtil1;
 import com.yichimai.excel.utils.ExcelHandlerUtil2;
 import com.yichimai.excel.utils.ExcelToDatabaseUtil;

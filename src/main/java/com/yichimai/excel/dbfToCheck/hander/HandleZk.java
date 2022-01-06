@@ -2,7 +2,7 @@ package com.yichimai.excel.dbfToCheck.hander;
 
 import java.util.List;
 
-import com.yichimai.excel.dbfToCheck.DbfLineEntity;
+import com.yichimai.excel.dbfToExcel.DbfLineEntity;
 
 /**
  * 自考条形码
@@ -36,7 +36,6 @@ public class HandleZk extends Handler {
 	public String generateClassLine(List<DbfLineEntity> classList) {
 		StringBuilder sb = new StringBuilder();
 		classList.sort((a,b) -> {  //按照座位号从小到大排序
-			
 			if(Integer.parseInt(a.getKmdm())< Integer.parseInt(b.getKmdm())) {   //首先根据科目排序，再根据座位号
 				return -1;
 			}else if(Integer.parseInt(a.getKmdm())> Integer.parseInt(b.getKmdm())) {

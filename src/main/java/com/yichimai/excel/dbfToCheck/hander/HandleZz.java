@@ -1,6 +1,6 @@
 package com.yichimai.excel.dbfToCheck.hander;
 
-import com.yichimai.excel.dbfToCheck.DbfLineEntity;
+import com.yichimai.excel.dbfToExcel.DbfLineEntity;
 
 /**
  * 中职专业技能
