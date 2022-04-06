@@ -143,23 +143,11 @@ public class ExcelHandlerUtil2 {
 	private static void handle_school_data(String examType,int sheetIndex,String spilitSchoolCellIndex,
 			 List<Row> schoolListCache,int pageSize,
 			SXSSFSheet newSheet,CellStyle newCellStyle) throws Exception {
-		
 		switch (examType) {
-		case "jszg":
-			handle_school_jszgz(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
-			break;
-			
-		case "sk":
-			handle_school_sk(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
-			break;
-
-		case "sy":
-			handle_school_sy(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
-			break;
-
-		case "3p":
-			handle_school_3p(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);
-			break;
+		case "jszg": handle_school_jszgz(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle);break;
+		case "sk": handle_school_sk(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle); break;
+		case "sy": handle_school_sy(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle); break;
+		case "3p": handle_school_3p(  sheetIndex, spilitSchoolCellIndex, schoolListCache, pageSize, newSheet,newCellStyle); break;
 			
 		default:
             throw new Exception("examType error");

@@ -1,4 +1,4 @@
-package com.yichimai.excel.dbfToCheck.hander;
+package com.yichimai.excel.dbfToCheck.handler;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,13 +9,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.linuxense.javadbf.DBFReader;
-import com.yichimai.excel.dbfToExcel.DbfLineEntity;
-import com.yichimai.excel.dbfToExcel.GenerateExcelUtil;
+import com.yichimai.excel.dbfToCheck.DbfLineEntity;
+import com.yichimai.excel.dbfToCheck.GenerateExcelUtil;
 
 /**
  * 20211227 4.0版本
  * 抽取了学业水平考试的公共内容作为抽象类
- *
+ * 
+ * 从上到下，分为4级  考点号，科目号，班级，座位号
+ * 由于“自学考试”的特殊性，自学考试并非按照科目号，而是单元号，所以除了指定kmdm，实际上用另一个字段用来存储分割的字段下标 splitCodeInSchool，以兼容自考
+ * 对于像“自考”这样特殊的考试，内部结构不一致的，可以自行复写方法修改实现方式
+ * 
+ * 注意：处理前建议手动排序dbf相关字段
  */
 public abstract class Handler {
 	private static Logger LOGGER = LoggerFactory.getLogger(Handler.class);

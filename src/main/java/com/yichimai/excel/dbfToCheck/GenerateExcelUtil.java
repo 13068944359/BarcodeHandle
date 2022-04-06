@@ -1,4 +1,4 @@
-package com.yichimai.excel.dbfToExcel;
+package com.yichimai.excel.dbfToCheck;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -202,9 +202,35 @@ public class GenerateExcelUtil {
 		Set<String> keySet = subjectMap.keySet();
 		subjectList.addAll(keySet);
 		subjectList.sort((a,b) -> {
-			return Integer.parseInt(a)< Integer.parseInt(b)? -1 : 1; // order it from small to big
+//			return Integer.parseInt(a)< Integer.parseInt(b)? -1 : 1; // order it from small to big
+			return compairStrToInt(a,b); // 因为“教师资格”特殊，因此需要增加特殊判断逻辑
 		});
 		
 		return subjectList;
-	} 
+	}
+	
+	//正常比较都是数字进行比较，但是“教师资格考试”比较特殊，科目里面带有字母"A"，需要专门针对这一特例进行特殊处理
+	private static int compairStrToInt(String a,String b) {
+		String aBeforeParse = a;
+		boolean aFlag = false;
+		if(a.contains("A")) {
+			aBeforeParse = a.substring(0,a.lastIndexOf("A"));aFlag=true;
+		}
+		
+		String bBeforeParse = b;
+		boolean bFlag = false;
+		if(b.contains("A")) {
+			bBeforeParse = b.substring(0,b.lastIndexOf("A"));bFlag=true;
+		}
+		
+		int aInt = Integer.parseInt(aBeforeParse);
+		int bInt = Integer.parseInt(bBeforeParse);
+		if(aInt != bInt) {
+			return aInt - bInt;
+		}else if( aFlag != bFlag) {
+			return aFlag?1:-1;
+		}else {
+			return 0;
+		}
+	}
 }

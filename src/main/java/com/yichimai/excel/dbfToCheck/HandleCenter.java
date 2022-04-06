@@ -1,4 +1,4 @@
-package com.yichimai.excel.dbfToExcel;
+package com.yichimai.excel.dbfToCheck;
 
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -8,9 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
-import com.yichimai.excel.dbfToCheck.hander.HandleZk;
-import com.yichimai.excel.dbfToCheck.hander.HandleZz;
-import com.yichimai.excel.dbfToCheck.hander.HandlerXysp;
+import com.yichimai.excel.dbfToCheck.handler.HandleJszg;
+import com.yichimai.excel.dbfToCheck.handler.HandleZk;
+import com.yichimai.excel.dbfToCheck.handler.HandleZz;
+import com.yichimai.excel.dbfToCheck.handler.HandlerXysp;
 
 public class HandleCenter {
 
@@ -42,6 +43,10 @@ public class HandleCenter {
 		case "zz":
 			HandleZz zz = new HandleZz();
 			zz.handle(reader, pageSize, targetFilePath, encodeType, logList);
+			break;
+		case "jszg":
+			HandleJszg jz = new HandleJszg();
+			jz.handle(reader, pageSize, targetFilePath, encodeType, logList);
 			break;
 		default:
             throw new Exception("exam type error = " + examType);

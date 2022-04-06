@@ -1,8 +1,8 @@
-package com.yichimai.excel.dbfToCheck.hander;
+package com.yichimai.excel.dbfToCheck.handler;
 
 import java.util.List;
 
-import com.yichimai.excel.dbfToExcel.DbfLineEntity;
+import com.yichimai.excel.dbfToCheck.DbfLineEntity;
 
 /**
  * 自考条形码
@@ -10,9 +10,9 @@ import com.yichimai.excel.dbfToExcel.DbfLineEntity;
  * 特殊的地方在于，考点内按照单元进行划分，且由于考场内有科目混在一起的情况
  * 所以考场内数据还要根据科目进行排序
  * 
- *  select 考点代码,考点名称,节点单元,round(考场代码,0),round(科目代码,0),round(座位号,0),姓名 from 
- *  ( select 考点代码,考点名称,节点单元,val(考场代码) 考场代码, val(科目代码) 科目代码,val(座位号) 座位号,姓名 from A WHERE 考点代码='010305' ) t 
- *  ORDER BY 考点代码,节点单元,考场代码,科目代码,座位号
+ select 考点代码,考点名称,节点单元,round(考场代码,0),round(科目代码,0),round(座位号,0),姓名 from 
+ ( select 考点代码,考点名称,节点单元,val(考场代码) 考场代码, val(科目代码) 科目代码,val(座位号) 座位号,姓名 from zk ) t 
+ ORDER BY 考点代码,节点单元,考场代码,科目代码,座位号
  */
 public class HandleZk extends Handler {
 

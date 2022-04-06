@@ -27,7 +27,6 @@ public class ResponseUtil {
 		rtResponse.put("rt_desc", "处理成功");
 		rtResponse.put("rt_flow_id", UUID.randomUUID());
 		rtResponse.put("rtResult", dataObject);
-		
 		return responseMap;
 	}
 	
