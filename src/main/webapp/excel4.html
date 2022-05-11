@@ -75,6 +75,8 @@
 							<option value="zk">自学考试</option>
 							<option value="zz">中职技能</option>
 							<option value="jszg">教师资格</option>
+							<option value="wnygz">五年一贯制</option>
+							<option value="zsb">专升本</option>
 					  	</select>
 				    	<input type="hidden" class="form-control" id="examTypeInput" required>
 				    	<label for="name-field">考试类型：</label>
@@ -195,7 +197,14 @@
 			}else if($("#examType").val() == "jszg"){
 				console.info("教师资格：");
 				console.info("select sfdm,kqdm,kddm,kdmc,kmdm,kmmc,kcdm,kczwh,zkzh,ksxm from jszg order by sfdm,kqdm,kddm,kmdm,kcdm,kczwh");
+			}else if($("#examType").val() == "wnygz"){
+				console.info("五年一贯制：");
+				console.info("select kddm,kdmc,kmdm,kmmc,kcdm,zwh,xm from A order by kddm,kmdm,kcdm,zwh");
+			}else if($("#examType").val() == "zsb"){
+				console.info("专升本：");
+				console.info("select kd_h,kdmc,km_h,科目名称,kc_h,zw_h,姓名 from A order by kd_h,km_h,kc_h,zw_h");
 			}
+			
 			layer.msg("请打开控制台复制sql语句");
 		});
 		

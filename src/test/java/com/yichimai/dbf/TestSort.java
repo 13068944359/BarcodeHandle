@@ -18,5 +18,15 @@ public class TestSort {
 		});
 		
 		System.out.println(subjectList);
+		
+
+		String colTitles = "申报考试地点_地市,现居住市县,详细地址,考生号,姓名,联系电话,考试类型,考生类别,学历类别,毕业院校";
+
+		String[] colTitlesArray = colTitles.split(",");
+		
+		System.out.println(colTitlesArray[0]);
+		
+		String a = String.valueOf(null);
+		System.out.println(a);
 	}
 }

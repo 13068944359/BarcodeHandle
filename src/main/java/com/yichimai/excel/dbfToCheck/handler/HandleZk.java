@@ -23,6 +23,7 @@ public class HandleZk extends Handler {
 			.setZwh(5).setXm(6).setSplitCodeInSchool(2).setExamName("自学考试");
 	}
 	
+
 	String generateSplitLine(DbfLineEntity item) {
 		return "单元-" + item.getDy() ;
 	}

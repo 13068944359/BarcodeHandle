@@ -9,9 +9,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
 import com.yichimai.excel.dbfToCheck.handler.HandleJszg;
+import com.yichimai.excel.dbfToCheck.handler.HandleWnygz;
 import com.yichimai.excel.dbfToCheck.handler.HandleZk;
 import com.yichimai.excel.dbfToCheck.handler.HandleZz;
 import com.yichimai.excel.dbfToCheck.handler.HandlerXysp;
+import com.yichimai.excel.dbfToCheck.handler.HandlerZsb;
 
 public class HandleCenter {
 
@@ -48,6 +50,16 @@ public class HandleCenter {
 			HandleJszg jz = new HandleJszg();
 			jz.handle(reader, pageSize, targetFilePath, encodeType, logList);
 			break;
+		case "wnygz":
+			HandleWnygz wn = new HandleWnygz();
+			wn.handle(reader, pageSize, targetFilePath, encodeType, logList);
+			break;
+			
+		case "zsb":
+			HandlerZsb zsb = new HandlerZsb();
+			zsb.handle(reader, pageSize, targetFilePath, encodeType, logList);
+			break;
+			
 		default:
             throw new Exception("exam type error = " + examType);
 		}

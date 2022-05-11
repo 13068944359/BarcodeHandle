@@ -60,23 +60,16 @@ public class ExcelToDatabaseUtil {
 						
 		            }else {
 		            	for(int index=0; index<rowlist.size(); index++	) {
-//		            		System.out.println(rowlist.get(index).toString());
-		    				PS.setString(index + 1, filterUtf8Mb4(rowlist.get(index).toString().trim()));//过滤掉emoji
+		            			PS.setString(index + 1, filterUtf8Mb4(rowlist.get(index).toString().trim()));//过滤掉emoji
 		    			}
 						PS.addBatch(); // one record in batch
 
 	    				if(rowIndex % 1000 ==0) {
-							System.out.println("executed  ~ " + rowIndex);
 							PS.executeBatch();// insert data in batch
 							SQL_CONN.commit();
 	    				}
 		            }
             	} catch (Exception e) {
-            		
-//            		for(int index=0; index<rowlist.size(); index++	) {
-//	            		System.out.print(rowlist.get(index).toString());
-//	    			}
-//            		System.out.println();
 					e.printStackTrace();
 				}
 	        }

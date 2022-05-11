@@ -38,7 +38,7 @@ public abstract class Handler {
 	private Integer kmmc ;
 	private Integer zwh ;
 	private Integer xm ;
-	private Integer splitCodeInSchool;
+	private Integer splitCodeInSchool;//院校里面分组的依据（一般是按照科目分，特殊的比如自考，按节点单元分）字段不固定，需要单独指定
 	
 	private String examName;
 	GenerateExcelUtil excelUtil;
