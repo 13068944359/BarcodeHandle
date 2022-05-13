@@ -77,6 +77,7 @@
 							<option value="jszg">教师资格</option>
 							<option value="wnygz">五年一贯制</option>
 							<option value="zsb">专升本</option>
+							<option value="gatlz">港澳台联合招生</option>
 					  	</select>
 				    	<input type="hidden" class="form-control" id="examTypeInput" required>
 				    	<label for="name-field">考试类型：</label>
@@ -203,8 +204,10 @@
 			}else if($("#examType").val() == "zsb"){
 				console.info("专升本：");
 				console.info("select kd_h,kdmc,km_h,科目名称,kc_h,zw_h,姓名 from A order by kd_h,km_h,kc_h,zw_h");
+			}else if($("#examType").val() == "gatlz"){
+				console.info("港澳台联合招生：");
+				console.info("select 考点号,考点名称,科目号,科目名称,考场号,座位号,姓名 from lz order by 考点号,科目号,考场号,座位号");
 			}
-			
 			layer.msg("请打开控制台复制sql语句");
 		});
 		
