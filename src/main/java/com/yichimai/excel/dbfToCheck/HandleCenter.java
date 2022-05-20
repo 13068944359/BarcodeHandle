@@ -13,6 +13,7 @@ import com.yichimai.excel.dbfToCheck.handler.HandleWnygz;
 import com.yichimai.excel.dbfToCheck.handler.HandleZk;
 import com.yichimai.excel.dbfToCheck.handler.HandleZz;
 import com.yichimai.excel.dbfToCheck.handler.HandlerGatlz;
+import com.yichimai.excel.dbfToCheck.handler.HandlerGk;
 import com.yichimai.excel.dbfToCheck.handler.HandlerXysp;
 import com.yichimai.excel.dbfToCheck.handler.HandlerZsb;
 
@@ -55,15 +56,17 @@ public class HandleCenter {
 			HandleWnygz wn = new HandleWnygz();
 			wn.handle(reader, pageSize, targetFilePath, encodeType, logList);
 			break;
-			
 		case "zsb":
 			HandlerZsb zsb = new HandlerZsb();
 			zsb.handle(reader, pageSize, targetFilePath, encodeType, logList);
 			break;
-			
 		case "gatlz":
 			HandlerGatlz gatlz = new HandlerGatlz();
 			gatlz.handle(reader, pageSize, targetFilePath, encodeType, logList);
+			break;
+		case "ptgk":
+			HandlerGk ptgk = new HandlerGk();
+			ptgk.handle(reader, pageSize, targetFilePath, encodeType, logList);
 			break;
 			
 		default:

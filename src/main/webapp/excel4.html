@@ -78,6 +78,7 @@
 							<option value="wnygz">五年一贯制</option>
 							<option value="zsb">专升本</option>
 							<option value="gatlz">港澳台联合招生</option>
+							<option value="ptgk">普通高考</option>
 					  	</select>
 				    	<input type="hidden" class="form-control" id="examTypeInput" required>
 				    	<label for="name-field">考试类型：</label>
@@ -207,6 +208,9 @@
 			}else if($("#examType").val() == "gatlz"){
 				console.info("港澳台联合招生：");
 				console.info("select 考点号,考点名称,科目号,科目名称,考场号,座位号,姓名 from lz order by 考点号,科目号,考场号,座位号");
+			}else if($("#examType").val() == "ptgk"){
+				console.info("普通高考：");
+				console.info("select kddm,kdmc,kmdm,kmmc,kc_h,zwxh,xm from pgksbp order by kddm,kmdm,kc_h,zwxh");
 			}
 			layer.msg("请打开控制台复制sql语句");
 		});
