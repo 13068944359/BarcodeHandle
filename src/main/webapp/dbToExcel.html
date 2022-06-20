@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>dbToExcel</title>
+<link rel="stylesheet" href="lib/bootstrap-4.6.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css">
+<style type="text/css">
+
+</style>
+</head>
+<body>
+	<!-- <ul id="transBackground">
+		<li><span></span></li>
+		<li><span></span></li>
+		<li><span></span></li>
+	</ul> -->
+	<div class="container"
+		style="color: #fff; background-color: rgba(0, 0, 0, 0.5);">
+		<h2	style="text-align: center; margin-bottom: 10px; padding-top: 70px; color: #fff;">sql脚本转excel（回车执行导出）</h2>
+		
+
+		<form class="form-horizontal" name="excelForm" id="excelForm">
+			
+			<div class="row">
+				<div class="col-md-12" >
+					<div class="form-group input-material">
+					      <textarea class="form-control" id="sqlInput" rows="10" cols="" style="width:100%;"></textarea>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- <div style="text-align:center;margin-top:50px;">
+			<button type="button" class="btn btn-primary btn-lg" id="submitBtn">提 交 处 理</button>
+		</div> -->
+
+		
+		<footer style="color: #fff;">
+			<hr style="border-top: 2px solid #fff;">
+			<!-- Purchase a site license to remove this link from the footer: http://www.portnine.com/bootstrap-themes -->
+			<p class="pull-right">服务中心-网络信息部</p>
+			<p>© 2021 xiaojz</p>
+		</footer>
+	</div>
+
+	<script src="js/jquery.min.js"></script>
+    <script src="lib/bootstrap-4.6.1/js/bootstrap.bundle.min.js"></script>
+	<script src="js/layer/layer.js"></script>
+	<script src="js/xiaojzUpload.js"></script>
+	<script src="js/xiaojzAnimation.js"></script>
+	<script type="text/javascript">
+	
+		var applicationPath = "/BarcodeHandle";		
+		
+		$("#sqlInput").keydown(function(e){
+			console.info($("#sqlInput").val())
+			if(e.keyCode==13){
+				var form=$("<form>");//定义一个form表单
+				form.attr("style","display:none");
+				form.attr("target","");
+				form.attr("method","post");
+				form.attr("action",applicationPath + "/DBToExcel/sqlToExcel");
+				var input1=$("<input>");
+				input1.attr("type","hidden");
+				input1.attr("name","sql");
+				input1.attr("value",$("#sqlInput").val());
+				$("body").append(form);//将表单放置在web中
+				form.append(input1);
+
+				form.submit();//表单提交
+				return false;
+			}
+
+		});
+		
+		
+		
+	
+	</script>
+</body>
+</html>
