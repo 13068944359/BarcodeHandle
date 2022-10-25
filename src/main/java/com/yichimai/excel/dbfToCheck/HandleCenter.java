@@ -12,6 +12,7 @@ import com.yichimai.excel.dbfToCheck.handler.HandleJszg;
 import com.yichimai.excel.dbfToCheck.handler.HandleWnygz;
 import com.yichimai.excel.dbfToCheck.handler.HandleZk;
 import com.yichimai.excel.dbfToCheck.handler.HandleZz;
+import com.yichimai.excel.dbfToCheck.handler.HandlerCrgk;
 import com.yichimai.excel.dbfToCheck.handler.HandlerGatlz;
 import com.yichimai.excel.dbfToCheck.handler.HandlerGk;
 import com.yichimai.excel.dbfToCheck.handler.HandlerXysp;
@@ -68,7 +69,11 @@ public class HandleCenter {
 			HandlerGk ptgk = new HandlerGk();
 			ptgk.handle(reader, pageSize, targetFilePath, encodeType, logList);
 			break;
-			
+
+		case "crgk":
+			HandlerCrgk crgk = new HandlerCrgk();
+			crgk.handle(reader, pageSize, targetFilePath, encodeType, logList);
+			break;
 		default:
             throw new Exception("exam type error = " + examType);
 		}

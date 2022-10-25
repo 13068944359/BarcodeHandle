@@ -134,7 +134,7 @@ public class DbfToDatabaseUtil {
 			if(lineCount == 5000) {
 				ps.executeBatch();// insert data in batch
 				lineCount = 0;// reset count
-				LOGGER.info("already handle data count= " + countAll);
+				System.out.println("already handle data count= " + countAll);
 			}
 		}
 		

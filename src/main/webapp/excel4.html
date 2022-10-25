@@ -79,6 +79,7 @@
 							<option value="zsb">专升本</option>
 							<option value="gatlz">港澳台联合招生</option>
 							<option value="ptgk">普通高考</option>
+							<option value="crgk">成人高考</option>
 					  	</select>
 				    	<input type="hidden" class="form-control" id="examTypeInput" required>
 				    	<label for="name-field">考试类型：</label>
@@ -195,7 +196,7 @@
 				console.info("select 考点代码,考点名称,节点单元,round(考场代码,0),round(科目代码,0),round(座位号,0),姓名 from  ( select 考点代码,考点名称,节点单元,val(考场代码) 考场代码, val(科目代码) 科目代码,val(座位号) 座位号,姓名 from A ) t  ORDER BY 考点代码,节点单元,考场代码,科目代码,座位号");
 			}else if($("#examType").val() == "zz"){
 				console.info("中职技能：");
-				console.info("select xh,ds_h,dsmc,xq_h,xqmc,kddm,kdmc,kmdm,kmmc,dtkys,tmsj,ksh,xm,kcdm,zw from A order by xh");
+				console.info("select kddm,kdmc,kmdm,kmmc,kcdm,zw,xm from A order by kddm,kmdm,kcdm,zw");
 			}else if($("#examType").val() == "jszg"){
 				console.info("教师资格：");
 				console.info("select sfdm,kqdm,kddm,kdmc,kmdm,kmmc,kcdm,kczwh,zkzh,ksxm from jszg order by sfdm,kqdm,kddm,kmdm,kcdm,kczwh");
@@ -211,7 +212,12 @@
 			}else if($("#examType").val() == "ptgk"){
 				console.info("普通高考：");
 				console.info("select kddm,kdmc,kmdm,kmmc,kc_h,zwxh,xm from pgksbp order by kddm,kmdm,kc_h,zwxh");
+			}else if($("#examType").val() == "crgk"){
+				console.info("成人高考：");
+				console.info("SELECT kcdm,kcmc,ssh,kmdm,kmmc,zwh,xm FROM ck20221024 ORDER BY kcdm,kmdm,ssh,zwh");
 			}
+			
+			
 			layer.msg("请打开控制台复制sql语句");
 		});
 		
