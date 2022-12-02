@@ -80,6 +80,7 @@
 							<option value="gatlz">港澳台联合招生</option>
 							<option value="ptgk">普通高考</option>
 							<option value="crgk">成人高考</option>
+							<option value="gksk">高考术科（美术、书法、广编）</option>
 					  	</select>
 				    	<input type="hidden" class="form-control" id="examTypeInput" required>
 				    	<label for="name-field">考试类型：</label>
@@ -216,6 +217,11 @@
 				console.info("成人高考：");
 				console.info("SELECT kcdm,kcmc,ssh,kmdm,kmmc,zwh,xm FROM ck20221024 ORDER BY kcdm,kmdm,ssh,zwh");
 			}
+			else if($("#examType").val() == "gksk"){
+				console.info("高考术科（美术、书法、广编）：");
+				console.info("SELECT ds_h,dsmc,xq_h,xqmc,kddm,kdmc,kc_h,kmdm,kmmc,txsj,ksh,zwxh,xm,txms FROM sfbp ORDER BY ds_h,xq_h,kddm,kmdm,kc_h,zwxh");
+			}
+			
 			
 			
 			layer.msg("请打开控制台复制sql语句");
