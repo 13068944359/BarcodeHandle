@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,6 +135,7 @@ public class DbfToDatabaseUtil {
 			
 			if(lineCount == 5000) {
 				ps.executeBatch();// insert data in batch
+				ps.clearBatch(); 
 				lineCount = 0;// reset count
 				System.out.println("already handle data count= " + countAll);
 			}
@@ -163,10 +166,13 @@ public class DbfToDatabaseUtil {
 		}
 		sb.append(")");
 		
+		
 		stat.executeUpdate(sb.toString());
 		stat.close();
 		conn.close();
 	}
+	
+	
 
 	
 	
@@ -175,7 +181,7 @@ public class DbfToDatabaseUtil {
 	 * 打印
 	 * 字段名	字段类型	长度
 	 */
-	public static void check() {
+	/*public static void check() {
 		InputStream fis = null;
 		try{
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("D://check20200929.xiaojz"),false));
@@ -210,7 +216,7 @@ public class DbfToDatabaseUtil {
 		}
 		
 		
-	}
+	}*/
 	
 //	private static String getValue(Object o) throws Exception {
 //		return o==null?"":new String(o.toString ().trim().getBytes ("ISO-8859-1"),"GBK");

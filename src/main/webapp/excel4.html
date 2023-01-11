@@ -81,6 +81,8 @@
 							<option value="ptgk">普通高考</option>
 							<option value="crgk">成人高考</option>
 							<option value="gksk">高考术科（美术、书法、广编）</option>
+							<option value="ssyjs">硕士研究生</option>
+							
 					  	</select>
 				    	<input type="hidden" class="form-control" id="examTypeInput" required>
 				    	<label for="name-field">考试类型：</label>
@@ -216,11 +218,15 @@
 			}else if($("#examType").val() == "crgk"){
 				console.info("成人高考：");
 				console.info("SELECT kcdm,kcmc,ssh,kmdm,kmmc,zwh,xm FROM ck20221024 ORDER BY kcdm,kmdm,ssh,zwh");
-			}
-			else if($("#examType").val() == "gksk"){
+			}else if($("#examType").val() == "gksk"){
 				console.info("高考术科（美术、书法、广编）：");
 				console.info("SELECT ds_h,dsmc,xq_h,xqmc,kddm,kdmc,kc_h,kmdm,kmmc,txsj,ksh,zwxh,xm,txms FROM sfbp ORDER BY ds_h,xq_h,kddm,kmdm,kc_h,zwxh");
+			}else if($("#examType").val() == "ssyjs"){
+				console.info("硕士研究生：");
+				console.info("SELECT 考点代码,考点名称,节点单元,ROUND(考场代码,0) 考场,ROUND(科目代码,0) 科目,ROUND(座位号,0) 座位号,姓名 FROM ( SELECT KC_H + DZDM 考点代码,KCMC + DZMC 考点名称,DYH 节点单元,SS_H 考场代码, val(KMDM) 科目代码,ZW_H 座位号,XM 姓名 FROM yjs2023zwb ) t  ORDER BY 考点代码,节点单元,考场代码,科目代码,座位号");
 			}
+			
+			
 			
 			
 			

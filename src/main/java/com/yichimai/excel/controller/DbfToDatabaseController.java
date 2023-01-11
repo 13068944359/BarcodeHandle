@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yichimai.excel.utils.DbfToDatabaseUtil;
+import com.yichimai.excel.utils.DbfToDatabaseUtilTest;
 import com.yichimai.excel.utils.ResponseUtil;
 
 
@@ -56,26 +57,26 @@ public class DbfToDatabaseController {
 	
 	
 	
-	@PostMapping("/testMultiFile")
-	public Object testMultiFile(@RequestParam("uploadFile") MultipartFile[] uploadFile			) {
-		Map<String, Object> result = null;
-		try {
-			long size = uploadFile.length;
-			System.out.println("fileSize = " + size);
-			
-			for(MultipartFile f : uploadFile) {
-				
-				System.out.println(f.getOriginalFilename());
-			}
-			
-			result = ResponseUtil.createSuccessResponse(null);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = ResponseUtil.createErrorResponse(e.getMessage());
-		}
-		return result;
-	}
+//	@PostMapping("/testMultiFile")
+//	public Object testMultiFile(@RequestParam("uploadFile") MultipartFile[] uploadFile			) {
+//		Map<String, Object> result = null;
+//		try {
+//			long size = uploadFile.length;
+//			System.out.println("fileSize = " + size);
+//			
+//			for(MultipartFile f : uploadFile) {
+//				
+//				System.out.println(f.getOriginalFilename());
+//			}
+//			
+//			result = ResponseUtil.createSuccessResponse(null);
+//			
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			result = ResponseUtil.createErrorResponse(e.getMessage());
+//		}
+//		return result;
+//	}
 	
 	
 }
