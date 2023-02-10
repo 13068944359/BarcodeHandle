@@ -15,6 +15,7 @@ import com.yichimai.excel.dbfToCheck.handler.HandleZz;
 import com.yichimai.excel.dbfToCheck.handler.HandlerCrgk;
 import com.yichimai.excel.dbfToCheck.handler.HandlerGatlz;
 import com.yichimai.excel.dbfToCheck.handler.HandlerGk;
+import com.yichimai.excel.dbfToCheck.handler.HandlerSj;
 import com.yichimai.excel.dbfToCheck.handler.HandlerSk;
 import com.yichimai.excel.dbfToCheck.handler.HandlerSsyjs;
 import com.yichimai.excel.dbfToCheck.handler.HandlerXysp;
@@ -39,6 +40,10 @@ public class HandleCenter {
 		DBFReader reader = checkFileType(uploadFile);
 		List<String> logList = new LinkedList<String>();//用来传输日志信息给前台
 		switch(examType) {
+		case "sj":
+			HandlerSj sj = new HandlerSj();
+			sj.handle(reader, pageSize, targetFilePath, encodeType, logList);
+			break;
 		case "xysp":
 			HandlerXysp xysp = new HandlerXysp();
 			xysp.handle(reader, pageSize, targetFilePath, encodeType, logList);

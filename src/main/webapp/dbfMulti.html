@@ -54,7 +54,7 @@
 </style>
 </head>
 <body>
-	<ul id="transBackground">
+	<ul id="transBackground" style="display:none;">
 		<li><span></span></li>
 		<li><span></span></li>
 		<li><span></span></li>
@@ -164,6 +164,10 @@
 			$(".customPara").hide();
 			$('body').materializeInputs();
 			console.info("萧家洲联系电话：13660004900");
+			
+			if(localStorage.getItem("animate") == 1){
+				$("#transBackground").show();
+			}
 		});
 		
 		var uploadElementId = initUploadElement("#uploadDiv");//自定义的上传组件By xiaojz

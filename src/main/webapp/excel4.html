@@ -54,7 +54,7 @@
 </style>
 </head>
 <body>
-	<ul id="transBackground">
+	<ul id="transBackground" style="display:none;">
 		<li><span></span></li>
 		<li><span></span></li>
 		<li><span></span></li>
@@ -82,6 +82,7 @@
 							<option value="crgk">成人高考</option>
 							<option value="gksk">高考术科（美术、书法、广编）</option>
 							<option value="ssyjs">硕士研究生</option>
+							<option value="sj">三+证书</option>
 							
 					  	</select>
 				    	<input type="hidden" class="form-control" id="examTypeInput" required>
@@ -166,11 +167,16 @@
 	
 		var applicationPath = "/BarcodeHandle";
 	
+		
 		$(function(){
 			$('body').materializeInputs();
 			//$('form').materializeInputs(".input-material");
 			$(".customPara").hide();
 			console.info("萧家洲联系电话：13660004900");
+			
+			if(localStorage.getItem("animate") == 1){
+				$("#transBackground").show();
+			}
 			
 		});
 		
@@ -224,6 +230,9 @@
 			}else if($("#examType").val() == "ssyjs"){
 				console.info("硕士研究生：");
 				console.info("SELECT 考点代码,考点名称,节点单元,ROUND(考场代码,0) 考场,ROUND(科目代码,0) 科目,ROUND(座位号,0) 座位号,姓名 FROM ( SELECT KC_H + DZDM 考点代码,KCMC + DZMC 考点名称,DYH 节点单元,SS_H 考场代码, val(KMDM) 科目代码,ZW_H 座位号,XM 姓名 FROM yjs2023zwb ) t  ORDER BY 考点代码,节点单元,考场代码,科目代码,座位号");
+			}else if($("#examType").val() == "sj"){
+				console.info("三+证书：");
+				console.info("select kddm,kdmc,kc_h,kmdm,kmmc,zwxh,xm from sj order by kddm,kmdm,kc_h,zwxh");
 			}
 			
 			

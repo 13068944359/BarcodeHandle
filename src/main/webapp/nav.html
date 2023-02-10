@@ -5,6 +5,7 @@
 	<title>页面导航</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/animation.css">
+	<link rel="stylesheet" href="lib/bootstrap-switch-3.3.4/dist/css/bootstrap3/bootstrap-switch.min.css">
 	<style type="text/css">
 		.transparent{
 			background-color: rgba(250,250,250,0.7);
@@ -12,13 +13,17 @@
 	</style>
 </head>
 <body>
-	<ul id="transBackground">
+	<ul id="transBackground" style="display:none;">
 		<li><span></span></li>
 		<li><span></span></li>
 		<li><span></span></li>
 	</ul>
 
 	<div class="container" style="color:#337ab7;">
+		<div style="text-align:right;padding-top:20px;padding-right:5px;">
+			<input id="inputcheck" type="checkbox" data-toggle="switch" data-size="mini" checked data-on-text="动画开" data-off-text="动画关">
+		</div>
+		
 		<h2 style="text-align:center;margin-bottom:50px; color:#fff;">页面导航</h2>
 	
 		<!-- <a href="excel.html">excel分页工具</a>
@@ -119,6 +124,36 @@
 
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
+	<script src="lib/bootstrap-switch-3.3.4/dist/js/bootstrap-switch.min.js"></script>
 	<script src="js/layer/layer.js"></script>
+	<script type="text/javascript">
+	    var checked = true;
+		$(function(){
+			
+			var animateState = localStorage.getItem("animate");
+			if( animateState == 0){
+				$('#inputcheck').attr("checked",false);
+			}else{
+				localStorage.setItem("animate",1)
+				$("#transBackground").show();
+			}
+			
+			
+			$('[data-toggle="switch"]').bootstrapSwitch();
+			
+			$('#inputcheck').on('switchChange.bootstrapSwitch', function(event, state) {
+				checked = state;
+				if( state ){
+					$("#transBackground").show();
+					localStorage.setItem("animate",1)
+				}else{
+					$("#transBackground").hide();
+					localStorage.setItem("animate",0)
+				}
+			  
+			  return false;
+			});
+		})
+	</script>
 </body>
 </html>
