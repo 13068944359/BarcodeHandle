@@ -25,7 +25,6 @@ import com.linuxense.javadbf.DBFReader;
 import com.yichimai.excel.controller.DbfToDatabaseController;
 
 public class DbfToDatabaseUtilMultiThreadVer {
-
 	private static Logger LOGGER = LoggerFactory.getLogger(DbfToDatabaseController.class);
 	
 	public static void handle(String databaseType,String mysqlUrl,String mysqlUser,String mysqlPass,String newTableName,

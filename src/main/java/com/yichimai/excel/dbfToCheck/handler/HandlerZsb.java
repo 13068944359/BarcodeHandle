@@ -14,11 +14,11 @@ import com.yichimai.excel.dbfToCheck.DbfLineEntity;
  * select kd_h,kdmc,考试时间,kc_h,km_h,科目名称,zw_h,姓名 from A order by kd_h,考试时间,kc_h,km_h,zw_h
  * 
  * ***注意：单元号不是纯数字，需要替换
- * UPDATE xx SET 考试时间='1' WHERE 考试时间='2022-04-27 08:00,2022-04-27 10:00       '
-UPDATE xx SET 考试时间='2' WHERE 考试时间='2022-04-27 10:30,2022-04-27 12:30'
-UPDATE xx SET 考试时间='3' WHERE 考试时间='2022-04-27 15:00,2022-04-27 17:00     '
-UPDATE xx SET 考试时间='4' WHERE 考试时间='2022-04-28 09:00,2022-04-28 11:30         '
-UPDATE xx SET 考试时间='5' WHERE 考试时间='2022-04-28 09:00,2022-04-28 12:30    '
+ * UPDATE jdb SET 考试时间='1' WHERE 考试时间='2023-03-25 08:00,2023-03-25 10:00       '
+UPDATE jdb SET 考试时间='2' WHERE 考试时间='2023-03-25 10:30,2023-03-25 12:30'
+UPDATE jdb SET 考试时间='3' WHERE 考试时间='2023-03-25 15:00,2023-03-25 17:00     '
+UPDATE jdb SET 考试时间='4' WHERE 考试时间='2023-03-26 09:00,2023-03-26 11:30         '
+UPDATE jdb SET 考试时间='5' WHERE 考试时间='2023-03-26 09:00,2023-03-26 12:30    '
  */
 public class HandlerZsb extends Handler {
 
@@ -33,19 +33,19 @@ public class HandlerZsb extends Handler {
 		String dyStr = null;
 		switch (Integer.valueOf(item.getDy())) {
 		case 1:
-			dyStr = "27日 08:00~10:00";
+			dyStr = "25日 08:00~10:00";
 			break;
 		case 2:
-			dyStr = "27日 10:30~12:30";
+			dyStr = "25日 10:30~12:30";
 			break;
 		case 3:
-			dyStr = "27日 15:00~17:00";
+			dyStr = "25日 15:00~17:00";
 			break;
 		case 4:
-			dyStr = "28日 09:00~11:30";
+			dyStr = "26日 09:00~11:30";
 			break;
 		case 5:
-			dyStr = "28日 09:00~12:30";
+			dyStr = "26日 09:00~12:30";
 			break;
 
 		default:

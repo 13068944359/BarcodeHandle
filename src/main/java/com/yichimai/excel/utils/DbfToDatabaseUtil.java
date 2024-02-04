@@ -22,11 +22,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
+import com.yichimai.excel.conf.MyWebSocket;
 import com.yichimai.excel.controller.DbfToDatabaseController;
 
 public class DbfToDatabaseUtil {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(DbfToDatabaseController.class);
+	
+	private static long COUNT_ALL = 0;
 	
 	public static void handle(String databaseType,String mysqlUrl,String mysqlUser,String mysqlPass,String newTableName,
 			Boolean isCreateTable,MultipartFile dbfFile,String charset) throws Exception {
@@ -48,6 +51,7 @@ public class DbfToDatabaseUtil {
 			createTable(mysqlUrl, mysqlUser, mysqlPass, titleList, newTableName);
 		}
 		
+		COUNT_ALL = 0;//初始化，重新计数
 		insertData(reader, mysqlUrl, mysqlUser, mysqlPass, titleList, newTableName);
 	}
 	
@@ -72,8 +76,11 @@ public class DbfToDatabaseUtil {
 			createTable(mysqlUrl, mysqlUser, mysqlPass, titleList, newTableName);
 		}
 		reader.close();
+
+		COUNT_ALL = 0;//初始化，重新计数
 		
 		for(MultipartFile f : dbfFile) {
+			MyWebSocket.sendMsg("start insert file = " + f.getOriginalFilename());
 			reader = new DBFReader(f.getInputStream(),Charset.forName(charset));// specify encoding method
 			insertData(reader, mysqlUrl, mysqlUser, mysqlPass, titleList, newTableName);
 			reader.close();
@@ -95,6 +102,7 @@ public class DbfToDatabaseUtil {
 	}
 	}
 
+	
 	
 	private static void insertData(DBFReader reader,String mysqlUrl,String mysqlUser,String mysqlPass,
 			List<String> titleList,String tableName) throws Exception {
@@ -120,9 +128,9 @@ public class DbfToDatabaseUtil {
 		sb.append(")");
 		
 		PreparedStatement ps = conn.prepareStatement(sb.toString());
-		
+//		int recordCount = reader.getRecordCount();//总记录数
 		int lineCount = 0;
-		long countAll = 0;
+//		long countAll = 0;
 		Object[] rowValues;
 		// read record line by line
 		while((rowValues = reader.nextRecord()) != null){
@@ -131,18 +139,20 @@ public class DbfToDatabaseUtil {
 				ps.setString(index + 1, val);
 			}
 			ps.addBatch(); // one record in batch
-			lineCount ++; countAll ++;
+			lineCount ++; COUNT_ALL ++;
 			
 			if(lineCount == 5000) {
 				ps.executeBatch();// insert data in batch
 				ps.clearBatch(); 
 				lineCount = 0;// reset count
-				System.out.println("already handle data count= " + countAll);
+				System.out.println("already handle data count= " + COUNT_ALL);
+				MyWebSocket.sendMsg("already handle data count= " + COUNT_ALL);
 			}
 		}
 		
 		if(lineCount != 0) {
 			ps.executeBatch();// insert data in batch
+			System.out.println("already handle data count= " + COUNT_ALL + " [finish]");
 		}
 		conn.commit();
 		ps.close();

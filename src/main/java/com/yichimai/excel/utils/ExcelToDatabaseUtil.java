@@ -12,10 +12,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.github.binarywang.java.emoji.EmojiConverter;
 
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.pinyin.PinyinUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -30,8 +34,8 @@ public class ExcelToDatabaseUtil {
 
 	
 	public static void main(String[] args) {
-//		Excel07SaxReader reader = new Excel07SaxReader(createRowHandler());
-//		reader.read("d:/1008/test.xlsx", 0);
+		System.out.println("🙃Yan Rong🐳");
+		System.out.println(EMOJI_CONVERTER.toHtml("🙃Yan Rong🐳"));
 	}
 	
 	
@@ -39,11 +43,40 @@ public class ExcelToDatabaseUtil {
 			String newTableName,Boolean isCreateTable,MultipartFile file,int sheetIndex) throws Exception {
 		Excel07SaxReader reader = new Excel07SaxReader(createRowHandler(databaseType,DBUrl,DBUser,DBPass,newTableName,isCreateTable));
 		reader.read(file.getInputStream(), sheetIndex);//sheetIndex sheet页的下标
+//		test(DBUrl, DBUser, DBPass, file);//寻找无法转换的表情符
 	}
+	
+	private static void test(String DBUrl,String DBUser,String DBPass,MultipartFile file) throws Exception {
+		Class.forName("com.mysql.jdbc.Driver");//加载数据库驱动
+		SQL_CONN = DriverManager.getConnection(DBUrl, DBUser, DBPass);
+		Statement stat = SQL_CONN.createStatement();
+		ExcelReader testReader;
+		//通过sheet编号获取
+		testReader = ExcelUtil.getReader(file.getInputStream(), 0);
+		int rowCount = testReader.getRowCount();
+		String insertSQL = "insert into kft(n) values(?)";
+		
+		for(int index = 0; index < rowCount; index ++) {
+			Row row = testReader.getOrCreateRow(index);
+			String name = row.getCell(3).toString().trim();
+			String nameAfterHandle = EMOJI_CONVERTER.toAlias(name);
+			
+			System.out.println(name + "====" + nameAfterHandle);
+
+			PS = SQL_CONN.prepareStatement(insertSQL);
+			PS.setString(1, nameAfterHandle);//过滤掉emoji
+			
+			PS.execute();
+		}
+		
+	}
+	
 	
 	
 	private static Connection SQL_CONN = null;
 	private static PreparedStatement PS = null;
+	private static final EmojiConverter EMOJI_CONVERTER = EmojiConverter.getInstance();
+	
 	
 	private static RowHandler createRowHandler(String databaseType,String DBUrl,String DBUser,String DBPass,
 			String newTableName,Boolean isCreateTable) {
@@ -59,17 +92,22 @@ public class ExcelToDatabaseUtil {
 						
 		            }else {
 		            	for(int index=0; index<rowlist.size(); index++	) {
-		            			PS.setString(index + 1, filterUtf8Mb4(rowlist.get(index).toString().trim()));//过滤掉emoji
+//		            		String currentLine = rowlist.get(index).toString().trim();
+//		            		String currentLineAfterHandle = EMOJI_CONVERTER.toAlias(rowlist.get(index).toString().trim());
+		            		
+	            			PS.setString(index + 1, EMOJI_CONVERTER.toAlias(rowlist.get(index).toString().trim()));//过滤掉emoji
+//		            		PS.setString(index + 1, filterUtf8Mb4(rowlist.get(index).toString().trim()));//过滤掉emoji
 		    			}
 						PS.addBatch(); // one record in batch
 
-	    				if(rowIndex % 1000 ==0) {
+	    				if(rowIndex % 10 ==0) {
 							PS.executeBatch();// insert data in batch
 							SQL_CONN.commit();
 	    				}
 		            }
             	} catch (Exception e) {
 					e.printStackTrace();
+					
 				}
 	        }
 	        
@@ -145,6 +183,8 @@ public class ExcelToDatabaseUtil {
 		
 		createTableSB.append(")");
 		
+		System.out.println(createTableSB.toString());
+		System.out.println(insertSB.toString());
 		if(isCreateTable) {
 			stat.executeUpdate(createTableSB.toString());//decide create table or not
 		}
@@ -167,17 +207,17 @@ public class ExcelToDatabaseUtil {
 	}
 	
 	//java过滤utf8mb4表情符号
-	private static String filterUtf8Mb4(String origin) {
-		if(origin.trim().isEmpty()){
-			return origin;
-		}
-		String pattern="[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]";
-		String reStr="";
-		Pattern emoji=Pattern.compile(pattern);
-		Matcher  emojiMatcher=emoji.matcher(origin);
-		origin=emojiMatcher.replaceAll(reStr);
-		return origin;
-	}
+//	private static String filterUtf8Mb4(String origin) {
+//		if(origin.trim().isEmpty()){
+//			return origin;
+//		}
+//		String pattern="[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]";
+//		String reStr="";
+//		Pattern emoji=Pattern.compile(pattern);
+//		Matcher  emojiMatcher=emoji.matcher(origin);
+//		origin=emojiMatcher.replaceAll(reStr);
+//		return origin;
+//	}
 	
 	
 //	private static void createInsertSql(int cowSize) throws Exception {

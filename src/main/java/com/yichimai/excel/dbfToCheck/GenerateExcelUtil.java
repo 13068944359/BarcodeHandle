@@ -137,7 +137,7 @@ public class GenerateExcelUtil {
         Footer newFooter = sheet.getFooter();
         newFooter.setCenter(HSSFFooter.page()+" / "+HSSFFooter.numPages());
         newFooter.setLeft("禁止先勾后检查，禁止连续勾几行");
-        newFooter.setRight("技术支持：xiaojz");
+        newFooter.setRight("技术支持：服务中心-萧家洲");
         
         //设置好列宽
 		sheet.setDefaultColumnWidth(7 * 256);// 设置7个字符的宽度（7个数字）

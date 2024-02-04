@@ -77,12 +77,12 @@
 			
 			<div id="uploadDiv" style="position: relative">
 				<div id="logDisplay" style="position: absolute;left: 0px;top: 0px;font-size: 12px;width: 100%;height: 100%;overflow: auto;">
-					<!-- <p>日志日志</p>
+				<!--	<p>日志日志</p>
 				<p>日志日志</p>
 				<p>日志日志</p>
 				<p>日志日志</p>
 				<p>日志日志</p>
-				<p>日志日志</p> -->
+				<p>日志日志</p>  -->
 				</div>
 				<p id="uploadIcon" style="font-size: 80px;"><i class="fa fa-cloud-upload"></i></p>
 				<p>点击上传</p>
@@ -113,7 +113,8 @@
 				</div>
 				<div class="col-md-3 customPara" >
 					<div class="form-group input-material">
-					      <input type="text" class="form-control" id="mysqlPass" value="root">
+					      <input type="text" class="form-control" id="mysqlPass" value="root"> 
+					      <!-- <input type="text" class="form-control" id="mysqlPass" value="Fwzx@303">-->
 					      <label for="name-field">数据库密码：</label>
 					</div>
 				</div>
@@ -126,7 +127,8 @@
 				
 				<div class="col-md-12 customPara" >
 					<div class="form-group input-material">
-					      <input type="text" class="form-control" id="mysqlUrl" value="jdbc:mysql://localhost:3306/dbf?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC">
+					      <!-- <input type="text" class="form-control" id="mysqlUrl" value="jdbc:mysql://172.16.20.162:3306/dbf?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&useSSL=false"> -->
+					      <input type="text" class="form-control" id="mysqlUrl" value="jdbc:mysql://localhost:3306/dbf?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&useSSL=false">
 					      <label for="name-field">数据库url：</label>
 					</div>
 				</div>
@@ -159,7 +161,8 @@
 	document.addEventListener("dragover",function(e){e.preventDefault();});
 	
 		var applicationPath = "/BarcodeHandle";
-	
+		
+		
 		$(function(){
 			$(".customPara").hide();
 			$('body').materializeInputs();
@@ -168,7 +171,33 @@
 			if(localStorage.getItem("animate") == 1){
 				$("#transBackground").show();
 			}
+
+			var websocket = null;
+			//判断当前浏览器是否支持WebSocket
+		    if('WebSocket' in window){
+		        websocket = new WebSocket("ws://"+ window.location.host +"/BarcodeHandle/ws");
+		        //websocket = new WebSocket("ws://localhost:8080/BarcodeHandle/ws");
+		        
+			    websocket.onerror = function(){    layer.msg("websocket error");  };//连接发生错误的回调方法
+			    websocket.onopen = function(event){ console.info("websocket open"); }//连接成功建立的回调方法
+			    websocket.onclose = function(){ console.info("websocket close"); }//连接关闭的回调方法
+			    //接收到消息的回调方法
+			    websocket.onmessage = function(event){ 
+			    	$("#logDisplay").append("<p>"+ event.data +"</p>");
+			    	console.info("got msg : " + event.data);
+			    	$("#logDisplay p:last")[0].scrollIntoView(true);
+	 				$("h2")[0].scrollIntoView(true);
+			    }
+		    }
+		    else{
+		        alert('Not support websocket')
+		    }
+			
 		});
+		
+	    
+		
+		
 		
 		var uploadElementId = initUploadElement("#uploadDiv");//自定义的上传组件By xiaojz
 		$("#" + uploadElementId).change(function(){
